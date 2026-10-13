@@ -1,3 +1,10 @@
+STATUS: implemented
+SOURCE: ../sandbox/run_sdk_sandbox.py; ../sandbox/tests/test_sandbox_guards.py
+API: ../sdk/python/cl1_real_adapter.py
+TESTS: ../sandbox/tests/test_sandbox_guards.py
+BACK: ./DOCUMENTATION-MANIFEST.md
+NEXT: ./REAL-CL1-INTEGRATION.md
+
 # Sandbox Validation and Promotion Checklist
 
 ## Stage 1 — repository-only tests
