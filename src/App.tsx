@@ -23,6 +23,7 @@ import EducationTeachingTool from './components/EducationTeachingTool';
 import NeuroCognitiveTeachingTool from './components/NeuroCognitiveTeachingTool';
 import { NeuralCultureSimulator } from './simulation/neuralCulture';
 import { CultureParameters } from './types/cl1';
+import { LinuxBootLoader } from './components/LinuxBootLoader';
 
 export default function App() {
   const [booting, setBooting] = useState(true);
@@ -253,6 +254,9 @@ export default function App() {
           onChangeCultureParams={handleChangeCultureParams}
         />
       )}
+
+      {/* Linux-style application bootstrap overlay; this is not device firmware. */}
+      {booting && <LinuxBootLoader onReady={() => setBooting(false)} />}
     </div>
   );
 }
