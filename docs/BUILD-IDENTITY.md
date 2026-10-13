@@ -9,6 +9,9 @@
 | Build date | 2026-10-13 |
 | Developer | ArkansasIo |
 | Organization | ArkansasIo |
+| License | MIT |
+| SPDX | MIT |
+| Copyright | Copyright (c) 2026 ArkansasIo |
 | Channel | development |
 | API version | v1 |
 
