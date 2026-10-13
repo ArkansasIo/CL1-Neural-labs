@@ -1,5 +1,11 @@
 # CL1 Neural Labs
 
+![CL1 Neural Labs](public/branding/cl1-neural-labs-logo.svg)
+
+**Research operating environment for neural-culture simulation, MEA visualization, experiments, analytics, and controlled CL1 SDK integration.**
+
+> Build 0.4.0 · CL1NL-20261013-001 · Developer: **ArkansasIo** · License: **MIT**
+
 A research and development studio for exploring Cortical Labs CL1-style biological neural computing through simulation, neural-signal visualization, closed-loop experiments, stimulation workflows, analytics, datasets, and database-backed research records.
 
 > **Important:** This repository contains software simulations and research tooling. The included simulator is not a biological culture and does not reproduce the full behavior of living neurons. The CL1-compatible server endpoints are development/simulation interfaces and must not be represented as direct physical-hardware control unless an explicitly implemented and validated hardware adapter is used.
@@ -224,6 +230,12 @@ Do not infer physical-device access from the existence of the simulator endpoint
 - Record software version, experiment parameters, dataset source, and timestamp for reproducibility.
 - Follow applicable institutional, biological, electrical, and research-ethics requirements for physical experiments.
 
+## Boot and branding
+
+- [Linux-style boot loader](docs/BOOT-LOADER.md)
+- [CL1 Neural Labs logo](public/branding/cl1-neural-labs-logo.svg)
+- [Build identity](docs/BUILD-IDENTITY.md)
+
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md)
@@ -239,4 +251,4 @@ This is an active research/prototyping repository. The simulator, visualization 
 
 ## License
 
-No license file was found at the repository root during documentation work. Add an explicit open-source license before distributing the repository under an open-source license.
+This project is licensed under the [MIT License](LICENSE). Third-party dependencies and the official Cortical Labs SDK/API remain subject to their own licenses and terms.
