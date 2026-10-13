@@ -1,3 +1,10 @@
+STATUS: implemented
+SOURCE: ../LICENSE; ../src/components/LicenseCredits.tsx
+API: none
+TESTS: not applicable
+BACK: ./BUILD-IDENTITY.md
+NEXT: ./INDEX.md
+
 # License and Third-Party Notice
 
 ## Project license
