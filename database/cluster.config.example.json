@@ -1,0 +1,5 @@
+{
+  "database":{"engine":"mysql","host":"127.0.0.1","port":3306,"database":"cl1_neural_lab","user":"cl1_lab","password_env":"CL1_DB_PASSWORD","charset":"utf8mb4"},
+  "cluster":{"default_size":8,"allowed_sizes":[1,2,4,8,16,32,64,128],"source_type":"simulator"},
+  "server":{"host":"127.0.0.1","port":3001}
+}
