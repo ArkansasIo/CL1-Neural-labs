@@ -1,3 +1,4 @@
+import { BUILD_INFO } from './src/config/buildInfo';
 import express, { Request, Response } from 'express';
 import http from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
@@ -146,9 +147,15 @@ async function startServer() {
     });
   });
 
+  // Build identity API
+  app.get('/api/build', (req: Request, res: Response) => {
+    res.json(BUILD_INFO);
+  });
+
   // API Status
   app.get('/api/status', (req: Request, res: Response) => {
     res.json({
+      ...BUILD_INFO,
       status: 'online',
       hardware: 'Cortical Labs CL1 Wetware System',
       channelCount: TOTAL_CHANNELS,
