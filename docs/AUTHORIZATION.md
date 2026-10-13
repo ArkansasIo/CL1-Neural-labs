@@ -1,3 +1,10 @@
+STATUS: partial
+SOURCE: ../python/cl1_neural_lab/auth.py; ../database/auth_schema.sql
+API: ../src/client/authClient.ts
+TESTS: ../python/tests/test_auth.py
+BACK: ./DOCUMENTATION-MANIFEST.md
+NEXT: ./SANDBOX-VALIDATION.md
+
 # Authentication and Authorization
 
 The identity layer provides registration, login, logout, sessions, roles, permissions and administration contracts.
