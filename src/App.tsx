@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Header } from './components/Header';
+import { StudioCommandBar } from './components/StudioCommandBar';
 import { MeaGrid2D } from './components/MeaGrid2D';
 import { Mea3DView } from './components/Mea3DView';
 import { ExperimentSuite } from './components/ExperimentSuite';
