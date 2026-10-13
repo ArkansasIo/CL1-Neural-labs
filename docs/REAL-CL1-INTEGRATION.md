@@ -1,3 +1,10 @@
+STATUS: partial
+SOURCE: ../sdk/python/cl1_real_adapter.py; ../scripts/cl1_real_record.py
+API: official CL SDK
+TESTS: ../scripts/cl1_sdk_simulator_smoke.py
+BACK: ./SANDBOX-VALIDATION.md
+NEXT: ./hardware/README.md
+
 # Real CL1 Hardware Integration
 
 ## Supported path
