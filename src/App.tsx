@@ -5,6 +5,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Header } from './components/Header';
 import { StudioCommandBar } from './components/StudioCommandBar';
+import { BuildIdentity } from './components/BuildIdentity';
 import { MeaGrid2D } from './components/MeaGrid2D';
 import { Mea3DView } from './components/Mea3DView';
 import { ExperimentSuite } from './components/ExperimentSuite';
@@ -217,6 +218,11 @@ export default function App() {
           <OriginalVisualizer />
         )}
       </main>
+
+      {/* Build identity / developer attribution */}
+      <div className="border-t border-slate-900 bg-[#070b14] px-4 py-1.5">
+        <BuildIdentity />
+      </div>
 
       {/* Persistent Bottom Session Recorder Strip */}
       <footer className="border-t border-slate-800/80 bg-[#090d16] px-4 py-2 z-30">
