@@ -16,6 +16,8 @@ import { RecordingController } from './components/RecordingController';
 import { ResearchLibraryModal } from './components/ResearchLibraryModal';
 import { HardwareSettingsModal } from './components/HardwareSettingsModal';
 import { DatabaseDatasetHub } from './components/DatabaseDatasetHub';
+import MazeTeachingTool from './components/MazeTeachingTool';
+import EducationTeachingTool from './components/EducationTeachingTool';
 import { NeuralCultureSimulator } from './simulation/neuralCulture';
 import { CultureParameters } from './types/cl1';
 
@@ -191,6 +193,14 @@ export default function App() {
 
         {activeTab === 'database' && (
           <DatabaseDatasetHub />
+        )}
+
+        {activeTab === 'maze-teaching' && (
+          <MazeTeachingTool />
+        )}
+
+        {activeTab === 'education' && (
+          <EducationTeachingTool />
         )}
 
         {activeTab === 'code' && (
