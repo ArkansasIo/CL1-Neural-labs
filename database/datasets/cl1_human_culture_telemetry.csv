@@ -1,0 +1,6 @@
+culture_id,name,species,morphology,days_in_vitro_div,cell_density_mm2,viability_pct,glial_ratio,synaptogenesis_score,firing_rate_hz,branching_ratio_sigma,temperature_c,ph_level,osmolarity_mosm
+CULT-HUMAN-IPSC-001,Human iPSC Cortical Culture Alpha,Homo sapiens (Human iPSC),Monolayer 2D,35,2400,94.5,0.22,0.88,4.82,1.002,37.0,7.35,305
+CULT-MOUSE-E18-002,Primary Mouse Embryonic Cortical Beta,Mus musculus,Monolayer 2D,21,3100,91.8,0.35,0.92,5.92,1.014,37.0,7.38,298
+CULT-ORGANOID-003,Human Forebrain 3D Organoid Gamma,Homo sapiens (Human iPSC),Brain Organoid 3D,60,4200,89.2,0.40,0.95,3.45,0.998,37.0,7.32,310
+CULT-HUMAN-IPSC-004,Human Cortical Culture Delta (DIV 42),Homo sapiens (Human iPSC),Monolayer 2D,42,2600,93.8,0.25,0.94,5.40,1.001,37.0,7.36,306
+CULT-MOUSE-E18-005,Primary Mouse Cortical Epsilon (DIV 28),Mus musculus,Monolayer 2D,28,3300,90.4,0.38,0.96,6.15,1.020,37.0,7.37,299

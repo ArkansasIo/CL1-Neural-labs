@@ -1,0 +1,39 @@
+{
+  "database": {
+    "dialect": "mysql",
+    "host": "localhost",
+    "port": 3306,
+    "user": "cl1_operator",
+    "password": "${CL1_DB_PASSWORD}",
+    "database": "cortical_labs_cl1",
+    "charset": "utf8mb4",
+    "timezone": "+00:00",
+    "pool": {
+      "min": 2,
+      "max": 20,
+      "acquireTimeoutMs": 30000,
+      "idleTimeoutMs": 10000
+    }
+  },
+  "tables": {
+    "cultures": "cultures",
+    "culture_subpopulations": "culture_subpopulations",
+    "electrodes": "electrodes",
+    "recording_sessions": "recording_sessions",
+    "spike_events": "spike_events",
+    "stimulation_events": "stimulation_events",
+    "closed_loop_experiments": "closed_loop_experiments",
+    "dsp_filter_configs": "dsp_filter_configs"
+  },
+  "datasets": {
+    "export_directory": "./database/datasets",
+    "formats": ["csv", "xlsx", "json", "sql"],
+    "sampling_rate_hz": 25000,
+    "max_batch_insert_size": 5000
+  },
+  "safety_interlocks": {
+    "enforce_charge_limit_pc": 3000,
+    "enforce_max_current_ua": 3.0,
+    "prevent_ground_channel_writes": true
+  }
+}

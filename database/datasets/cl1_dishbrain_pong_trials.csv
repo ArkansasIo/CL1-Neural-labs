@@ -1,0 +1,19 @@
+trial_id,session_id,experiment_type,ball_velocity_x,ball_velocity_y,sensory_channel_stimulated,motor_readout_channel,outcome,rally_length,fep_feedback_type,feedback_freq_hz
+1,SES-20261013-001,DishBrain Pong,4.5,2.1,10,34,HIT,1,Predictable Structured,4
+2,SES-20261013-001,DishBrain Pong,4.7,2.8,10,34,HIT,2,Predictable Structured,4
+3,SES-20261013-001,DishBrain Pong,4.9,-1.5,18,42,HIT,3,Predictable Structured,4
+4,SES-20261013-001,DishBrain Pong,5.2,3.4,18,42,MISS,0,Unpredictable White Noise,100
+5,SES-20261013-001,DishBrain Pong,4.5,-2.0,10,34,HIT,1,Predictable Structured,4
+6,SES-20261013-001,DishBrain Pong,4.6,-1.2,10,34,HIT,2,Predictable Structured,4
+7,SES-20261013-001,DishBrain Pong,4.8,2.4,18,42,HIT,3,Predictable Structured,4
+8,SES-20261013-001,DishBrain Pong,5.0,1.8,18,42,HIT,4,Predictable Structured,4
+9,SES-20261013-001,DishBrain Pong,5.3,-2.6,10,34,HIT,5,Predictable Structured,4
+10,SES-20261013-001,DishBrain Pong,5.5,3.1,18,42,MISS,0,Unpredictable White Noise,100
+11,SES-20261013-001,DishBrain Pong,4.5,1.5,10,34,HIT,1,Predictable Structured,4
+12,SES-20261013-001,DishBrain Pong,4.7,-2.1,10,34,HIT,2,Predictable Structured,4
+13,SES-20261013-001,DishBrain Pong,4.9,2.8,18,42,HIT,3,Predictable Structured,4
+14,SES-20261013-001,DishBrain Pong,5.1,1.9,18,42,HIT,4,Predictable Structured,4
+15,SES-20261013-001,DishBrain Pong,5.3,-1.7,10,34,HIT,5,Predictable Structured,4
+16,SES-20261013-001,DishBrain Pong,5.6,2.2,18,42,HIT,6,Predictable Structured,4
+17,SES-20261013-001,DishBrain Pong,5.8,-2.9,10,34,HIT,7,Predictable Structured,4
+18,SES-20261013-001,DishBrain Pong,6.1,1.4,18,42,HIT,8,Predictable Structured,4

@@ -1,0 +1,6 @@
+{
+  "name": "Cortical Labs CL1 Neural SDK & MEA Studio",
+  "description": "Interactive simulator, real-time 2D/3D MEA visualizer, biphasic stimulation controller, and closed-loop neural experiment workbench for Cortical Labs CL1 wetware systems.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

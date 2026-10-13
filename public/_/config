@@ -1,0 +1,6 @@
+{
+  "device_id": "CL1-SIM-001",
+  "name": "Cortical Labs CL1 Bio-Computer Simulator",
+  "channel_count": 64,
+  "sampling_frequency": 25000
+}
