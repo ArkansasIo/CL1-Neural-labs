@@ -85,14 +85,11 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center p-1.5 shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-400/30">
-              <img src="/cortical-logo.svg" alt="Cortical Labs" className="h-full w-full object-contain filter invert" onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }} />
-              <Cpu className="h-5 w-5 text-white" />
+              <img src="/branding/cl1-neural-labs-logo.svg" alt="CL1 Neural Labs" className="h-full w-full object-contain" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-sm tracking-wide text-white">CORTICAL LABS</span>
+                <span className="font-bold text-sm tracking-wide text-white">CL1 NEURAL LABS</span>
                 <span className="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-400 border border-cyan-800/60">
                   CL1 Wetware
                 </span>
@@ -102,7 +99,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               </div>
               <p className="text-[11px] text-slate-400">
-                Biological Neural Network Simulator & MEA Interface • 64 Microelectrodes
+                Neural Research Studio • 64-Channel MEA Simulation
               </p>
             </div>
           </div>
