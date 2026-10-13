@@ -1,0 +1,2 @@
+# Minimal optional server dependency. Core simulator uses only the Python standard library.
+aiohttp>=3.9,<4
