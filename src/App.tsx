@@ -25,6 +25,7 @@ import { NeuralCultureSimulator } from './simulation/neuralCulture';
 import { CultureParameters } from './types/cl1';
 
 export default function App() {
+  const [booting, setBooting] = useState(true);
   // Shared simulation instance
   const simulator = useMemo(() => new NeuralCultureSimulator(), []);
 
