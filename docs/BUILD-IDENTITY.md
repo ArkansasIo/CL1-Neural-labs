@@ -1,3 +1,10 @@
+STATUS: implemented
+SOURCE: ../src/config/buildInfo.ts; ../src/components/BuildIdentity.tsx
+API: ../server.ts#/api/build
+TESTS: not yet automated
+BACK: ./DOCUMENTATION-MANIFEST.md
+NEXT: ./LICENSE.md
+
 # Build Identity
 
 | Field | Value |
