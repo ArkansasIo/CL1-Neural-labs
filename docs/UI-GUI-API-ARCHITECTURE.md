@@ -1,3 +1,10 @@
+STATUS: implemented
+SOURCE: ../src/App.tsx; ../src/components/StudioCommandBar.tsx
+API: ../server.ts; ../src/client/
+TESTS: not yet automated
+BACK: ./DOCUMENTATION-MANIFEST.md
+NEXT: ./REAL-CL1-INTEGRATION.md
+
 # CL1 Neural Labs UI / GUI / API Architecture
 
 The application uses a command-center layout with a consistent navigation model across simulation, SDK-simulator, replay, and physical-read-only workflows.
