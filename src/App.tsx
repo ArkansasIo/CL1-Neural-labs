@@ -18,6 +18,7 @@ import { HardwareSettingsModal } from './components/HardwareSettingsModal';
 import { DatabaseDatasetHub } from './components/DatabaseDatasetHub';
 import MazeTeachingTool from './components/MazeTeachingTool';
 import EducationTeachingTool from './components/EducationTeachingTool';
+import NeuroCognitiveTeachingTool from './components/NeuroCognitiveTeachingTool';
 import { NeuralCultureSimulator } from './simulation/neuralCulture';
 import { CultureParameters } from './types/cl1';
 
@@ -201,6 +202,10 @@ export default function App() {
 
         {activeTab === 'education' && (
           <EducationTeachingTool />
+        )}
+
+        {activeTab === 'neurocognitive' && (
+          <NeuroCognitiveTeachingTool />
         )}
 
         {activeTab === 'code' && (
