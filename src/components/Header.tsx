@@ -73,6 +73,7 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'database', label: 'SQL & Datasets', icon: Database, badge: 'MySQL & Excel' },
     { id: 'maze-teaching', label: 'Maze & Pathfinding', icon: Route, badge: 'Algorithms' },
     { id: 'education', label: 'Math Teaching', icon: GraduationCap, badge: 'K → University' },
+    { id: 'neurocognitive', label: 'Neurocognitive AI', icon: Cpu, badge: 'Reasoning Nodes' },
     { id: 'code', label: 'Python SDK Runner', icon: Code2 },
     { id: 'legacy-vis', label: 'CL1 Visualizer', icon: ExternalLink },
   ];
