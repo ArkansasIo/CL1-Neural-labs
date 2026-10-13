@@ -17,6 +17,8 @@ import {
   Volume2,
   VolumeX,
   Database,
+  Route,
+  GraduationCap,
 } from 'lucide-react';
 import { CultureParameters } from '../types/cl1';
 import { globalAudioSynth } from '../simulation/audioSynth';
@@ -69,6 +71,8 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'stim', label: 'Stimulation Workbench', icon: Zap },
     { id: 'analytics', label: 'Neural Analytics', icon: Gauge },
     { id: 'database', label: 'SQL & Datasets', icon: Database, badge: 'MySQL & Excel' },
+    { id: 'maze-teaching', label: 'Maze & Pathfinding', icon: Route, badge: 'Algorithms' },
+    { id: 'education', label: 'Math Teaching', icon: GraduationCap, badge: 'K → University' },
     { id: 'code', label: 'Python SDK Runner', icon: Code2 },
     { id: 'legacy-vis', label: 'CL1 Visualizer', icon: ExternalLink },
   ];
