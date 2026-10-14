@@ -4,9 +4,23 @@
   "purpose": "Validate the spike analysis pipeline against generated data.",
   "dataSource": "synthetic",
   "modelFamily": "poisson-baseline",
-  "parameters": {"durationSeconds": 10, "channelCount": 64, "rateHz": 4, "binWidthMs": 100},
+  "parameters": {
+    "durationSeconds": 10,
+    "channelCount": 64,
+    "rateHz": 4,
+    "binWidthMs": 100
+  },
   "randomSeed": 2026,
-  "provenance": {"createdAt": "2026-10-14T04:40:00Z", "software": "CL1 Neuro Lab research scripts", "sourceUri": null, "sourceCitation": null},
-  "limitations": ["Synthetic output only; not a biological recording.", "The Poisson model is a statistical baseline, not a mechanistic neuron model.", "Metrics are descriptive and not clinically validated."],
+  "provenance": {
+    "createdAt": "REPLACE_WITH_ACTUAL_ISO8601_UTC",
+    "software": "CL1 Neural Labs research scripts",
+    "sourceUri": null,
+    "sourceCitation": null
+  },
+  "limitations": [
+    "Synthetic output only; not a biological recording.",
+    "The Poisson model is a statistical baseline, not a mechanistic neuron model.",
+    "Metrics are descriptive and not clinically validated."
+  ],
   "notes": "Replace the timestamp with the actual creation time when running a new experiment."
 }
