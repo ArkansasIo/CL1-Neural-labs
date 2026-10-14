@@ -23,6 +23,8 @@ jobs:
         run: npm ci
       - name: Audit repository completeness
         run: python scripts/audit_repository.py
+      - name: Repository contract tests
+        run: npm test
       - name: Type-check
         run: npm run lint
       - name: Production build
