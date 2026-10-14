@@ -11,6 +11,12 @@ This plan distinguishes missing files from missing implementation or validation.
 - [x] `python/cl1_neural_lab/database_store.py` — in-memory SQLite test store.
 - [x] `python/cl1_neural_lab/server.py` — console entry point declared by `pyproject.toml`.
 - [x] `python/README.md` — package README declared by `pyproject.toml`.
+- [x] `python/tests/test_cli.py` — CLI output and argument validation tests.
+- [x] `python/tests/test_maze.py` — pathfinding and maze-generation tests.
+- [x] `python/tests/test_plugins.py` — plugin lifecycle and rollback tests.
+- [x] `python/tests/test_virtual_hardware.py` — recording, stimulation, and physical-mode safety tests.
+- [x] `docs/hardware/CHANNEL-MAP.md` — missing channel-map reference.
+- [x] `docs/research/FILE-RESEARCH-MAP.md` — missing research file-map reference.
 - [x] `python/tests/test_simulator.py` — simulator and safety regression tests.
 - [ ] Confirm release workflow passes on GitHub Actions.
 - [ ] Run TypeScript type-check and production build on the latest commit.
