@@ -2,6 +2,7 @@ import React,{useMemo,useState} from "react";
 import {MAZE_VARIANTS,MazeTeachingClient,type MazeAlgorithm,type MazeVariant} from "../client/mazeTeachingClient";
 
 type P={r:number;c:number};
+const toCell=(p:P)=>({row:p.r,col:p.c});
 function makeGrid(rows:number,cols:number,seed:number):number[][]{
  const g=Array.from({length:rows},()=>Array(cols).fill(1));let s=seed|0;
  const rand=()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296};
@@ -30,7 +31,7 @@ export default function MazeTeachingTool(){
  const [client]=useState(()=>new MazeTeachingClient());
  const grid=useMemo(()=>makeGrid(rows,cols,seed),[rows,cols,seed]);
  const result=useMemo(()=>search(grid,algo),[grid,algo,run]);
- const summary=useMemo(()=>client.record({algorithm:algo,path:result.path,visited:result.visited,cost:result.cost,found:result.found}),[run]);
+ const summary=useMemo(()=>client.record({algorithm:algo,path:result.path.map(toCell),visited:result.visited.map(toCell),cost:result.cost,found:result.found}),[run]);
  const visited=new Set(result.visited.map(p=>p.r*cols+p.c)),path=new Set(result.path.map(p=>p.r*cols+p.c));
  const meta=MAZE_VARIANTS.find(v=>v.id===variant)!;
  return <section className="maze-teaching-tool">

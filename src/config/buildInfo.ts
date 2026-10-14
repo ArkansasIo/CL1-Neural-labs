@@ -6,6 +6,9 @@ export const BUILD_INFO = {
   buildDate: '2026-10-13',
   developer: 'ArkansasIo',
   organization: 'ArkansasIo',
+  copyright: 'Copyright (c) 2026 ArkansasIo',
+  license: 'MIT License',
+  licenseSpdx: 'MIT',
   channel: 'development',
   apiVersion: 'v1',
   hardwareProfiles: [

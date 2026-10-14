@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BUILD_INFO } from '../config/buildInfo';
 
 const STAGES: readonly [string,string,string][] = [
@@ -12,11 +12,15 @@ const STAGES: readonly [string,string,string][] = [
 
 export const LinuxBootLoader: React.FC<{ onReady: () => void }> = ({ onReady }) => {
   const [visible, setVisible] = useState(0);
+  // Keep the latest callback in a ref so parent re-renders (e.g. the live
+  // simulation ticking) don't restart the boot timers and stall the loader.
+  const onReadyRef = useRef(onReady);
+  onReadyRef.current = onReady;
   useEffect(() => {
     const timer = window.setInterval(() => setVisible(v => Math.min(v + 1, STAGES.length)), 180);
-    const done = window.setTimeout(onReady, 1450);
+    const done = window.setTimeout(() => onReadyRef.current(), 1450);
     return () => { window.clearInterval(timer); window.clearTimeout(done); };
-  }, [onReady]);
+  }, []);
 
   return <div className="fixed inset-0 z-[100] bg-[#03060b] text-slate-300 font-mono p-6 md:p-10 flex items-center justify-center">
     <div className="w-full max-w-4xl">

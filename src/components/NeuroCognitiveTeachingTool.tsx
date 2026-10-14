@@ -4,12 +4,12 @@ import { BRAIN_SECTIONS, NeuroCognitiveClient } from "../client/neurocognitiveCl
 const examples = ["2*x+3=11", "d/dx 3*x^2+2*x+1", "integral 2*x+1", "2+3*4"];
 
 function explain(q: string) {
-  const compact = q.replace(/\\s+/g, "");
+  const compact = q.replace(/\s+/g, "");
   if (compact === "2*x+3=11")
     return { answer: "x = 4", steps: ["parse equation","identify x","solve","verify"] };
-  if (/^d\\/dx\\s+/.test(q))
+  if (/^d\/dx\s+/.test(q))
     return { answer: "Derivative task", steps: ["parse","apply power rule","combine terms"] };
-  if (/^integral\\s+/i.test(q))
+  if (/^integral\s+/i.test(q))
     return { answer: "Antiderivative task", steps: ["parse","apply reverse power rule","add C"] };
   if (q.trim() === "2+3*4")
     return { answer: "14", steps: ["parse","multiply first","add"] };
