@@ -49,3 +49,14 @@ test('Python CLI dependencies and simulator modules are present', () => {
     'python/tests/test_simulator.py',
   ]) assert.ok(existsSync(resolve(root, path)), `missing required path: ${path}`);
 });
+
+test('OpenAPI contract covers the implemented TypeScript REST routes', () => {
+  const api = read('openapi.yaml');
+  const server = read('server.ts');
+  for (const route of ['/_/config', '/api/build', '/api/status', '/api/stim']) {
+    assert.ok(api.includes(route), `OpenAPI route missing: ${route}`);
+    assert.ok(server.includes(route), `server route missing: ${route}`);
+  }
+  assert.match(api, /Development-only API/);
+  assert.match(server, /new WebSocketServer\(\{ server, path: '\/_\/ws\/overview' \}\)/);
+});
