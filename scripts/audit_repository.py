@@ -12,7 +12,6 @@ import argparse
 import ast
 import json
 import re
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -154,7 +153,7 @@ def main() -> int:
     parser.add_argument("--json", action="store_true", help="print machine-readable JSON")
     args = parser.parse_args()
 
-    findings = audit_required_paths() + audit_imports() + audit_markdown_links() + audit_frontend_test_setup()
+    findings = audit_required_paths() + audit_imports() + audit_python_imports() + audit_markdown_links() + audit_frontend_test_setup()
     report = {
         "repository_root": str(ROOT),
         "source_files_scanned": len(source_files()),
