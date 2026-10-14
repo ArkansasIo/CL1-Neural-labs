@@ -98,10 +98,13 @@ paths:
                     type: array
                     items: { type: integer }
         '400':
-          description: Invalid request body
+          description: Invalid request body or channel IDs (including grounded/reference channels)
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   error: { type: string }
+                  invalidChannels:
+                    type: array
+                    items: {}
