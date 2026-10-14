@@ -20,6 +20,8 @@ jobs:
           bun-version: latest
       - name: Install dependencies
         run: bun install --frozen-lockfile
+      - name: Audit repository completeness
+        run: python scripts/audit_repository.py
       - name: Type-check
         run: bun run lint
       - name: Production build
