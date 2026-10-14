@@ -23,6 +23,7 @@ class NeuralCultureSimulator:
         self._stim_queue: list[int] = []
         self._spike_probability = 0.045
         self._recent_spikes: list[dict[str, int]] = []
+        self._latest_frame = NeuralFrame(0, (0,) * TOTAL_CHANNELS, (0,) * TOTAL_CHANNELS, (0,) * TOTAL_CHANNELS, ())
 
     def step(self, dt_ms: float = 20) -> NeuralFrame:
         if dt_ms <= 0:
@@ -57,7 +58,8 @@ class NeuralCultureSimulator:
         self._recent_spikes.extend(spikes)
         if len(self._recent_spikes) > 10_000:
             del self._recent_spikes[:-10_000]
-        return NeuralFrame(self._timestamp, tuple(mins), tuple(maxs), tuple(flags), tuple(spikes))
+        self._latest_frame = NeuralFrame(self._timestamp, tuple(mins), tuple(maxs), tuple(flags), tuple(spikes))
+        return self._latest_frame
 
     def stimulate(self, channels: list[int] | tuple[int, ...]) -> list[StimEvent]:
         accepted: list[StimEvent] = []
@@ -80,3 +82,6 @@ class NeuralCultureSimulator:
 
     def get_recent_spikes(self) -> list[dict[str, int]]:
         return list(self._recent_spikes)
+
+    def get_latest_frame(self) -> NeuralFrame:
+        return self._latest_frame
