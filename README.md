@@ -181,7 +181,7 @@ Type-check:
 
 ```bun run lint```
 
-The package currently defines the development server as Vite on port 3000. `server.ts` is a separate Express/WebSocket application and should be treated as the CL1 protocol simulation/backend layer.
+The `dev` script starts the Express/WebSocket simulator with Vite middleware on port 3000. `dev:vite` starts Vite directly. The API contract is documented in [docs/API-CONTRACTS.md](docs/API-CONTRACTS.md), with the REST surface captured in [openapi.yaml](openapi.yaml).
 
 ## Research workflow
 
@@ -238,6 +238,10 @@ Do not infer physical-device access from the existence of the simulator endpoint
 
 ## Documentation
 
+- [Repository completeness audit](docs/MISSING-FILES-AUDIT.md)
+- [Remaining files and implementation plan](docs/REMAINING-FILES-PLAN.md)
+- [API contracts](docs/API-CONTRACTS.md)
+- [OpenAPI specification](openapi.yaml)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Development](docs/DEVELOPMENT.md)
 - [CL1 Integration](docs/CL1-INTEGRATION.md)
