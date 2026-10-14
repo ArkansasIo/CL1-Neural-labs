@@ -9,6 +9,8 @@ This plan distinguishes missing files from missing implementation or validation.
 - [x] `python/cl1_neural_lab/neural_culture.py` — deterministic software simulator.
 - [x] `python/cl1_neural_lab/analysis_engine.py` — explicit synthetic analysis metrics.
 - [x] `python/cl1_neural_lab/database_store.py` — in-memory SQLite test store.
+- [x] `python/cl1_neural_lab/server.py` — console entry point declared by `pyproject.toml`.
+- [x] `python/README.md` — package README declared by `pyproject.toml`.
 - [x] `python/tests/test_simulator.py` — simulator and safety regression tests.
 - [ ] Confirm release workflow passes on GitHub Actions.
 - [ ] Run TypeScript type-check and production build on the latest commit.
