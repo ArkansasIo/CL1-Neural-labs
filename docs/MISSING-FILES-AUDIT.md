@@ -13,6 +13,12 @@ python scripts/audit_repository.py --json
 
 The checker uses only Python's standard library. It exits non-zero when a configured required path or a relative source import is missing. Broken documentation links are warnings. A frontend test-coverage gap is reported separately because it is a completeness concern, not necessarily a build blocker.
 
+## Confirmed gaps found during inspection
+
+- **Python simulator/analysis/store modules:** `python/tests/test_core.py` imported `neural_culture.py`, `analysis_engine.py`, and `database_store.py`, but those modules were absent. `virtual_hardware.py` also imported a missing shared `types.py`. Minimal software-only implementations and a package initializer have now been added; they require CI confirmation.
+- **Sandbox test discovery:** the sandbox tests use pytest-style functions, while the release workflow invoked `unittest`, which discovered zero tests. The workflow now invokes pytest for this suite.
+- **Frontend dependency installation:** the Bun frozen-lockfile install failed because `bun.lock` was out of sync. The release workflow now uses the repository's npm lockfile via `npm ci`; this should be confirmed by the next workflow run.
+
 ## Confirmed gap from the repository inventory
 
 - **Frontend automated tests and test command:** the current package scripts provide development, build, preview, clean, and TypeScript lint/type-check commands, but no frontend test command; the tracked tree does not contain a frontend unit/component test suite. The GitHub Actions release workflow therefore checks compilation/build and Python/sandbox tests, but not frontend behavior.
