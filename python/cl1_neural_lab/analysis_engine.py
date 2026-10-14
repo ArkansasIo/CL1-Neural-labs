@@ -10,6 +10,10 @@ class AnalysisSnapshot:
     functional_connectivity_matrix: list[list[float]]
     active_channels: int
     method: str
+    average_firing_rate_hz: float
+    active_electrode_count: int
+    network_criticality_branching_ratio: float
+    burst_frequency_hz: float
 
 class ElectrophysiologyAnalysisEngine:
     def __init__(self, simulator: NeuralCultureSimulator):
@@ -26,9 +30,16 @@ class ElectrophysiologyAnalysisEngine:
                 value = (active[i] + active[j]) / 2.0
                 matrix[i][j] = value
                 matrix[j][i] = value
+        active_count = int(sum(active))
+        # A deliberately simple synthetic activity metric; not a biological estimate.
+        firing_rate = active_count / max(1, TOTAL_CHANNELS - 5) / 0.02
         return AnalysisSnapshot(
             timestamp=frame.timestamp,
             functional_connectivity_matrix=matrix,
-            active_channels=int(sum(active)),
+            active_channels=active_count,
+            average_firing_rate_hz=firing_rate,
+            active_electrode_count=active_count,
+            network_criticality_branching_ratio=active_count / max(1, TOTAL_CHANNELS - 5),
+            burst_frequency_hz=0.0,
             method="synthetic co-activity placeholder; not validated functional connectivity",
         )
