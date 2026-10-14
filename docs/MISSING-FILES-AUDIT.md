@@ -15,7 +15,7 @@ The checker uses only Python's standard library. It exits non-zero when a config
 
 ## Confirmed gaps found during inspection
 
-- **Python simulator/analysis/store modules:** `python/tests/test_core.py` imported `neural_culture.py`, `analysis_engine.py`, and `database_store.py`, but those modules were absent. `virtual_hardware.py` also imported a missing shared `types.py`. Minimal software-only implementations and a package initializer have now been added; they require CI confirmation.
+- **Python package files and modules:** `python/pyproject.toml` referenced a missing `python/README.md`; its console script referenced a missing `cl1_neural_lab.server` module; and `python/tests/test_core.py` imported missing simulator, analysis, and database modules. `virtual_hardware.py` also imported a missing shared `types.py`. The README, server entry point, shared types, software-only simulator, analysis engine, and in-memory store have now been added. The simulator/CLI/test workflow passed on commit `b1ec86283d1c6a6dd40e82fa505b5bc1e7c62aa7`; the subsequent README/server-audit changes are awaiting their own CI run.
 - **Sandbox test discovery:** the sandbox tests use pytest-style functions, while the release workflow invoked `unittest`, which discovered zero tests. The workflow now invokes pytest for this suite.
 - **Frontend dependency installation:** the Bun frozen-lockfile install failed because `bun.lock` was out of sync. The release workflow now uses the repository's npm lockfile via `npm ci`; this should be confirmed by the next workflow run.
 
