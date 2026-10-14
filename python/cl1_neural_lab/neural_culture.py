@@ -22,6 +22,7 @@ class NeuralCultureSimulator:
         self._timestamp = 0
         self._stim_queue: list[int] = []
         self._spike_probability = 0.045
+        self._recent_spikes: list[dict[str, int]] = []
 
     def step(self, dt_ms: float = 20) -> NeuralFrame:
         if dt_ms <= 0:
@@ -31,6 +32,7 @@ class NeuralCultureSimulator:
         mins: list[int] = []
         maxs: list[int] = []
         flags: list[int] = []
+        spikes: list[dict[str, int]] = []
         for channel in range(TOTAL_CHANNELS):
             flag = 0
             if channel in GROUNDED_CHANNELS:
@@ -47,10 +49,15 @@ class NeuralCultureSimulator:
             else:
                 center = self._rng.randint(-12, 12)
                 low, high = center - 25, center + 25
+            if flag & FLAG_HAS_SPIKE:
+                spikes.append({"timestamp": self._timestamp, "channel": channel})
             mins.append(low)
             maxs.append(high)
             flags.append(flag)
-        return NeuralFrame(self._timestamp, tuple(mins), tuple(maxs), tuple(flags))
+        self._recent_spikes.extend(spikes)
+        if len(self._recent_spikes) > 10_000:
+            del self._recent_spikes[:-10_000]
+        return NeuralFrame(self._timestamp, tuple(mins), tuple(maxs), tuple(flags), tuple(spikes))
 
     def stimulate(self, channels: list[int] | tuple[int, ...]) -> list[StimEvent]:
         accepted: list[StimEvent] = []
@@ -67,3 +74,9 @@ class NeuralCultureSimulator:
     @property
     def timestamp(self) -> int:
         return self._timestamp
+
+    def get_timestamp(self) -> int:
+        return self._timestamp
+
+    def get_recent_spikes(self) -> list[dict[str, int]]:
+        return list(self._recent_spikes)
