@@ -163,7 +163,11 @@ For a mean difference, report effect size and uncertainty, not only a p-value. C
 
 For multiple exploratory comparisons, report the number of tests and apply an appropriate multiple-comparison procedure. Preregister primary outcomes where feasible.
 
-## 7. Functional interfaces (proposed)
+## 7. Implemented pure-Python helpers
+
+The package module [`math_models.py`](../../python/cl1_neural_lab/math_models.py) currently implements `firing_rate`, `bin_spikes`, `population_activity`, `logistic`, `euler_step`, and `shannon_entropy` using the Python standard library. These are general-purpose analysis/math helpers; they do not control hardware. Regression tests are in [`test_math_models.py`](../../python/tests/test_math_models.py).
+
+## 8. Functional interfaces (proposed)
 
 The analysis layer should expose deterministic, unit-tested functions with explicit data-source metadata:
 
@@ -180,7 +184,7 @@ compare_conditions(control, treatment, design) -> StatisticalReport
 
 Each result should include value, units, method/version, parameters, source provenance, sample size, uncertainty when available, and warnings. Proposed interfaces do not imply these functions already exist in the codebase.
 
-## 8. Failure behavior
+## 9. Failure behavior
 
 Reject or explicitly flag:
 - non-finite values;
