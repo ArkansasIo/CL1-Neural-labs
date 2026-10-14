@@ -1,0 +1,107 @@
+openapi: 3.1.0
+info:
+  title: CL1 Neural Labs Development Simulator API
+  version: 0.4.0
+  description: >-
+    Development-only API for the CL1 Neural Labs project simulator. These
+    endpoints do not establish physical CL1 connectivity or authorize hardware
+    stimulation. The API is not an official Cortical Labs specification.
+servers:
+  - url: http://localhost:3000
+    description: Local TypeScript simulator server
+paths:
+  /_/config:
+    get:
+      summary: Get simulator connection configuration
+      operationId: getSimulatorConfig
+      responses:
+        '200':
+          description: Simulator configuration
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [device_id, name, channel_count, sampling_frequency, overview_url, websocket_url]
+                properties:
+                  device_id: { type: string, example: CL1-SIM-001 }
+                  name: { type: string }
+                  channel_count: { type: integer, const: 64 }
+                  sampling_frequency: { type: integer, const: 25000 }
+                  overview_url: { type: string, format: uri }
+                  websocket_url: { type: string, format: uri }
+  /api/build:
+    get:
+      summary: Get build identity
+      operationId: getBuildIdentity
+      responses:
+        '200':
+          description: Build metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /api/status:
+    get:
+      summary: Get simulator server status
+      operationId: getSimulatorStatus
+      responses:
+        '200':
+          description: Current process and simulator status
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, channelCount, samplingRateHz, wsClients, isPaused, playbackSpeed, frameCounter]
+                properties:
+                  status: { type: string, const: online }
+                  channelCount: { type: integer, const: 64 }
+                  samplingRateHz: { type: integer, const: 25000 }
+                  wsClients: { type: integer, minimum: 0 }
+                  isPaused: { type: boolean }
+                  playbackSpeed: { type: number, exclusiveMinimum: 0 }
+                  frameCounter: { type: integer, minimum: 0 }
+                additionalProperties: true
+  /api/stim:
+    post:
+      summary: Queue a virtual stimulation event
+      description: >-
+        Development simulation only. This route does not control a physical
+        device. Channel IDs must be integers from 0 to 63. The implementation
+        should be treated as a simulator command queue, not a safety interlock.
+      operationId: queueVirtualStimulation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [channels]
+              properties:
+                channels:
+                  type: array
+                  items:
+                    type: integer
+                    minimum: 0
+                    maximum: 63
+      responses:
+        '200':
+          description: Request accepted into the simulation queue
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success, stimulatedChannels]
+                properties:
+                  success: { type: boolean, const: true }
+                  stimulatedChannels:
+                    type: array
+                    items: { type: integer }
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: { type: string }
