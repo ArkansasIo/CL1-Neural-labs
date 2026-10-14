@@ -23,7 +23,7 @@ class ElectrophysiologyAnalysisEngine:
         # A symmetric, bounded synthetic connectivity estimate. This is a
         # placeholder metric for UI/testing, not a scientific inference claim.
         matrix = [[0.0 for _ in range(TOTAL_CHANNELS)] for _ in range(TOTAL_CHANNELS)]
-        frame = self.simulator.step(20)
+        frame = self.simulator.get_latest_frame()
         active = [1.0 if flag & FLAG_HAS_SPIKE else 0.0 for flag in frame.flags]
         for i in range(TOTAL_CHANNELS):
             for j in range(i + 1, TOTAL_CHANNELS):
