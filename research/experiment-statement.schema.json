@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CL1 Neuro Lab Experiment Statement",
+  "type": "object",
+  "required": ["statementVersion", "experimentId", "purpose", "dataSource", "modelFamily", "parameters", "provenance", "limitations"],
+  "properties": {
+    "statementVersion": {"const": "1.0"},
+    "experimentId": {"type": "string", "minLength": 1},
+    "purpose": {"type": "string", "minLength": 1},
+    "dataSource": {"enum": ["synthetic", "recording-replay", "user-provided-dataset", "hardware-recording"]},
+    "modelFamily": {"enum": ["poisson-baseline", "refractory-poisson", "burst-modulated", "recording-analysis", "closed-loop-policy"]},
+    "parameters": {"type": "object"},
+    "randomSeed": {"type": ["integer", "null"]},
+    "provenance": {"type": "object", "required": ["createdAt", "software"], "properties": {"createdAt": {"type": "string", "format": "date-time"}, "software": {"type": "string"}, "sourceUri": {"type": ["string", "null"]}, "sourceCitation": {"type": ["string", "null"]}}},
+    "limitations": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "notes": {"type": "string"}
+  },
+  "additionalProperties": false
+}
