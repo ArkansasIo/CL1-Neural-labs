@@ -139,7 +139,7 @@ export default function App() {
         {activeTab === 'education' && <EducationTeachingTool />}
         {activeTab === 'neurocognitive' && <NeuroCognitiveTeachingTool />}
         {activeTab === 'code' && <CodePlayground simulator={simulator} />}
-        {activeTab === 'legacy-vis' && <OriginalVisualizer />}
+        {activeTab === 'legacy-vis' && <OriginalVisualizer simulator={simulator} />}
       </main>
 
       <div className="fixed left-64 right-0 bottom-[45px] border-t border-slate-900 bg-[#070b14] px-4 py-1.5 z-30">
