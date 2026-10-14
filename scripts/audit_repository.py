@@ -73,6 +73,54 @@ def audit_imports() -> list[dict[str, str]]:
     return findings
 
 
+
+def audit_python_imports() -> list[dict[str, str]]:
+    """Check package-relative and explicit cl1_neural_lab imports for absent modules."""
+    findings: list[dict[str, str]] = []
+    package_root = ROOT / "python" / "cl1_neural_lab"
+
+    def module_exists(base: Path) -> bool:
+        return base.with_suffix(".py").is_file() or (base / "__init__.py").is_file()
+
+    ignored = {".git", "node_modules", "dist", "build", ".venv", "__pycache__"}
+    for source in ROOT.rglob("*.py"):
+        if any(part in ignored for part in source.parts):
+            continue
+        try:
+            tree = ast.parse(source.read_text(encoding="utf-8"), filename=str(source))
+        except (OSError, UnicodeDecodeError, SyntaxError):
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.ImportFrom):
+                continue
+            if node.level:
+                base = source.parent
+                for _ in range(node.level - 1):
+                    base = base.parent
+                if node.module:
+                    base = base.joinpath(*node.module.split("."))
+                    if not module_exists(base):
+                        findings.append({
+                            "severity": "ERROR",
+                            "kind": "unresolved-python-import",
+                            "file": rel(source),
+                            "reference": "." * node.level + node.module,
+                        })
+            elif node.module and (
+                node.module == "cl1_neural_lab" or node.module.startswith("cl1_neural_lab.")
+            ):
+                suffix = node.module.removeprefix("cl1_neural_lab").strip(".")
+                base = package_root.joinpath(*suffix.split(".")) if suffix else package_root
+                if not module_exists(base):
+                    findings.append({
+                        "severity": "ERROR",
+                        "kind": "unresolved-python-import",
+                        "file": rel(source),
+                        "reference": node.module,
+                    })
+    return findings
+
+
 def audit_markdown_links() -> list[dict[str, str]]:
     findings = []
     for source in ROOT.rglob("*.md"):
