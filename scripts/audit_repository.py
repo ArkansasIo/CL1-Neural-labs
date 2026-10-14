@@ -20,7 +20,7 @@ REQUIRED_FILES = {
     "frontend entry points": ["src/main.tsx", "src/App.tsx", "src/index.css", "vite.config.ts", "tsconfig.json"],
     "core simulation": ["src/simulation/neuralCulture.ts", "src/types/cl1.ts"],
     "backend and config": ["server.ts", ".env.example", "public/build-info.json"],
-    "Python SDK": ["python/pyproject.toml", "python/requirements.txt", "python/cl1_neural_lab/cli.py", "python/cl1_neural_lab/server.py"],
+    "Python SDK": ["python/README.md", "python/pyproject.toml", "python/requirements.txt", "python/cl1_neural_lab/cli.py", "python/cl1_neural_lab/server.py"],
     "automated checks": [".github/workflows/release-gates.yml", "python/tests", "sandbox/tests"],
 }
 SOURCE_SUFFIXES = {".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"}
