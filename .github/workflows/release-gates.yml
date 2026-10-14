@@ -41,7 +41,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e "./python[dev]"
       - name: Unit tests
-        run: python -m unittest discover -s python/tests -v
+        run: python -m pytest python/tests -q
       - name: Simulator CLI smoke test
         run: python -m cl1_neural_lab.cli --steps 3 --seed 7
 
