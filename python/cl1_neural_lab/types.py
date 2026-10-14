@@ -21,3 +21,4 @@ class NeuralFrame:
     min_values: tuple[int, ...]
     max_values: tuple[int, ...]
     flags: tuple[int, ...]
+    spikes: tuple[dict[str, int], ...] = ()
