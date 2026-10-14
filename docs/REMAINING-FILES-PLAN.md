@@ -18,7 +18,7 @@ This plan distinguishes missing files from missing implementation or validation.
 - [x] `docs/API-CONTRACTS.md` — documented development endpoints and WebSocket framing.
 - [ ] Add endpoint-level tests for the TypeScript server and Python cluster server.
 - [ ] Add protocol decoder tests for binary frame size, endianness, flags, malformed frames, and versioning.
-- [ ] Add API schema validation and generate an OpenAPI document after routes are verified.
+- [x] Add initial OpenAPI document for verified TypeScript REST routes; validate and expand it as routes evolve.
 - [ ] Add integration tests for client reconnects, disconnect cleanup, and server shutdown.
 - [ ] Verify package scripts and dependency lockfiles stay synchronized.
 
