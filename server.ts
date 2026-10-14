@@ -21,6 +21,12 @@ const FLAG_HAS_SPIKE = 1 << 0;
 const FLAG_HAS_STIM = 1 << 1;
 const UV_PER_RAW_ADC = 0.195;
 
+// This server is a project simulator. Ground/reference channels and out-of-range
+// values are rejected before they can enter the virtual event queue.
+const isStimChannel = (channel: unknown): channel is number =>
+  typeof channel === 'number' && Number.isInteger(channel) && channel >= 0 && channel < TOTAL_CHANNELS &&
+  !GROUNDED_CHANNELS.includes(channel) && !REFERENCE_CHANNELS.includes(channel);
+
 async function startServer() {
   const app = express();
   app.use(express.json());
@@ -116,7 +122,7 @@ async function startServer() {
     ws.on('message', (message: string) => {
       try {
         const data = JSON.parse(message.toString());
-        if (data.action === 'stimulate' && typeof data.channel === 'number') {
+        if (data.action === 'stimulate' && isStimChannel(data.channel)) {
           stimQueue.push(data.channel);
         } else if (data.action === 'reset') {
           ws.send(JSON.stringify(resetMsg));
@@ -170,16 +176,20 @@ async function startServer() {
   // API Stimulate
   app.post('/api/stim', (req: Request, res: Response) => {
     const { channels } = req.body;
-    if (Array.isArray(channels)) {
-      channels.forEach((ch: number) => {
-        if (typeof ch === 'number' && ch >= 0 && ch < 64) {
-          stimQueue.push(ch);
-        }
-      });
-      res.json({ success: true, stimulatedChannels: channels });
-    } else {
-      res.status(400).json({ error: 'channels must be an array of numbers' });
+    if (!Array.isArray(channels)) {
+      res.status(400).json({ error: 'channels must be an array of integer channel IDs' });
+      return;
     }
+    const invalidChannels = channels.filter((ch: unknown) => !isStimChannel(ch));
+    if (invalidChannels.length > 0) {
+      res.status(400).json({
+        error: 'channels contain invalid, grounded, or reference channel IDs',
+        invalidChannels,
+      });
+      return;
+    }
+    channels.forEach((ch: number) => stimQueue.push(ch));
+    res.json({ success: true, stimulatedChannels: channels });
   });
 
   // Serve static assets from public/
