@@ -1,6 +1,6 @@
 # CL1 Neural Labs Documentation Index
 
-> [Manifest](./DOCUMENTATION-MANIFEST.md) · [Navigation Convention](./FILE-NAVIGATION.md) · [Project README](../README.md)
+> [Manifest](./DOCUMENTATION-MANIFEST.md) · [Navigation Convention](./FILE-NAVIGATION.md) · [Missing-file audit](./MISSING-FILES-AUDIT.md) · [Audit tool](../scripts/audit_repository.py) · [Project README](../README.md)
 
 ## Application
 
