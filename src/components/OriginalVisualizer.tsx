@@ -9,7 +9,7 @@ export const OriginalVisualizer: React.FC = () => {
   };
 
   const handleOpenNewTab = () => {
-    window.open('/visualiser/index.html', '_blank');
+    window.open(`${import.meta.env.BASE_URL}visualiser/index.html`, '_blank');
   };
 
   return (
@@ -48,7 +48,7 @@ export const OriginalVisualizer: React.FC = () => {
       <div className="flex-1 w-full bg-black relative">
         <iframe
           key={iframeKey}
-          src="/visualiser/index.html"
+          src={`${import.meta.env.BASE_URL}visualiser/index.html`}
           className="w-full h-full border-none block"
           title="Cortical Labs CL1 Native Visualizer"
         />
