@@ -197,6 +197,32 @@ export const ElectrodeDetailModal: React.FC<ElectrodeDetailModalProps> = ({
     ctx.stroke();
   };
 
+
+  const waveform = simulator.getWaveformHistory(channel);
+  const waveformValues = Array.from(waveform);
+  const waveformMean = waveformValues.reduce((a, b) => a + b, 0) / Math.max(1, waveformValues.length);
+  const waveformMin = Math.min(...waveformValues);
+  const waveformMax = Math.max(...waveformValues);
+  const waveformPeakToPeak = waveformMax - waveformMin;
+  const waveformRms = Math.sqrt(
+    waveformValues.reduce((sum, value) => sum + value * value, 0) / Math.max(1, waveformValues.length),
+  );
+  const recentChannelSpikes = simulator.getRecentSpikes().filter((s) => s.channel === channel);
+  const recentChannelStims = simulator.getRecentStims().filter((s) => s.channel === channel);
+  const lastSpike = recentChannelSpikes[recentChannelSpikes.length - 1];
+  const lastStim = recentChannelStims[recentChannelStims.length - 1];
+  const isiMs = recentChannelSpikes.length > 1
+    ? (recentChannelSpikes[recentChannelSpikes.length - 1].timestamp -
+        recentChannelSpikes[recentChannelSpikes.length - 2].timestamp) / 25
+    : null;
+  const spikeAmplitude = lastSpike?.samples
+    ? Math.max(...Array.from(lastSpike.samples)) - Math.min(...Array.from(lastSpike.samples))
+    : null;
+  const spikeTrough = lastSpike?.samples
+    ? Math.min(...Array.from(lastSpike.samples))
+    : null;
+  const traceWindowMs = waveformValues.length * 20;
+
   const firingRates = simulator.getFiringRates();
   const rate = firingRates[channel] || 0;
 
@@ -219,16 +245,16 @@ export const ElectrodeDetailModal: React.FC<ElectrodeDetailModalProps> = ({
                   <span className="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-500">Grounded</span>
                 ) : isRef ? (
                   <span className="text-[11px] px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800">
-                    Hardware Reference
+                    Reference Channel
                   </span>
                 ) : (
                   <span className="text-[11px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
-                    Active Biological Electrode
+                    Active Simulated Electrode
                   </span>
                 )}
               </div>
               <p className="text-[11px] text-slate-400">
-                Cortical Labs CL1 High-Fidelity 25 kHz Microelectrode Signal Acquisition
+                CL1-compatible simulation node • 25 kHz acquisition reference
               </p>
             </div>
           </div>
@@ -250,16 +276,54 @@ export const ElectrodeDetailModal: React.FC<ElectrodeDetailModalProps> = ({
               <span className="text-emerald-400 font-mono text-base font-bold">{rate.toFixed(2)} Hz</span>
             </div>
             <div className="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
-              <span className="text-slate-400 block text-[11px]">Estimated SNR</span>
-              <span className="text-cyan-400 font-mono text-base font-bold">{isGrounded ? '0 dB' : '18.4 dB'}</span>
+              <span className="text-slate-400 block text-[11px]">Trace Peak-to-Peak</span>
+              <span className="text-cyan-400 font-mono text-base font-bold">{waveformPeakToPeak.toFixed(2)} μV</span>
             </div>
             <div className="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
-              <span className="text-slate-400 block text-[11px]">Extracellular Peak</span>
-              <span className="text-slate-200 font-mono text-base font-bold">{isGrounded ? '±1.2 μV' : '-78.5 μV'}</span>
+              <span className="text-slate-400 block text-[11px]">Trace RMS</span>
+              <span className="text-slate-200 font-mono text-base font-bold">{waveformRms.toFixed(2)} μV</span>
             </div>
             <div className="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
-              <span className="text-slate-400 block text-[11px]">Noise Floor (RMS)</span>
-              <span className="text-slate-200 font-mono text-base font-bold">{isGrounded ? '0.8 μV' : '8.5 μV'}</span>
+              <span className="text-slate-400 block text-[11px]">Trace Baseline</span>
+              <span className="text-slate-200 font-mono text-base font-bold">{waveformMean.toFixed(2)} μV</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div className="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <span className="text-slate-500 block text-[10px]">Trace Window</span>
+              <span className="text-slate-300 font-mono">{traceWindowMs} ms</span>
+            </div>
+            <div className="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <span className="text-slate-500 block text-[10px]">Detected Spikes</span>
+              <span className="text-emerald-300 font-mono">{recentChannelSpikes.length}</span>
+            </div>
+            <div className="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <span className="text-slate-500 block text-[10px]">Last ISI</span>
+              <span className="text-slate-300 font-mono">{isiMs === null ? '—' : isiMs.toFixed(1) + ' ms'}</span>
+            </div>
+            <div className="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <span className="text-slate-500 block text-[10px]">Stim Events</span>
+              <span className="text-cyan-300 font-mono">{recentChannelStims.length}</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div className="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <span className="text-slate-500 block text-[10px]">Min / Max</span>
+              <span className="text-slate-300 font-mono">{waveformMin.toFixed(1)} / {waveformMax.toFixed(1)} μV</span>
+            </div>
+            <div className="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <span className="text-slate-500 block text-[10px]">Latest Spike Trough</span>
+              <span className="text-slate-300 font-mono">{spikeTrough === null ? '—' : spikeTrough.toFixed(1) + ' μV'}</span>
+            </div>
+            <div className="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <span className="text-slate-500 block text-[10px]">Latest Spike P-P</span>
+              <span className="text-slate-300 font-mono">{spikeAmplitude === null ? '—' : spikeAmplitude.toFixed(1) + ' μV'}</span>
+            </div>
+            <div className="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <span className="text-slate-500 block text-[10px]">Latest Event</span>
+              <span className="text-slate-300 font-mono">{lastStim ? 'STIM' : lastSpike ? 'SPIKE' : '—'}</span>
             </div>
           </div>
 
@@ -293,7 +357,7 @@ export const ElectrodeDetailModal: React.FC<ElectrodeDetailModalProps> = ({
                 -{visibleRangeUv} μV
               </div>
               <div className="absolute top-2 right-2 text-[10px] font-mono text-emerald-400/80 bg-black/60 px-1.5 py-0.5 rounded">
-                25,000 Samples/sec
+                Display trace • 20 ms simulation steps
               </div>
             </div>
           </div>
