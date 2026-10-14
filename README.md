@@ -256,3 +256,14 @@ This is an active research/prototyping repository. The simulator, visualization 
 ## License
 
 This project is licensed under the [MIT License](LICENSE). Third-party dependencies and the official Cortical Labs SDK/API remain subject to their own licenses and terms.
+
+## Research and verification guides
+
+- [Implementation and validation roadmap](docs/IMPLEMENTATION-ROADMAP.md)
+- [Reproducible research protocol](docs/REPRODUCIBLE-RESEARCH.md)
+- [Verification matrix](docs/TEST-MATRIX.md)
+- [Development operations runbook](docs/OPERATIONS-RUNBOOK.md)
+- [Experiment plan templates](research/EXPERIMENT-PLAN-TEMPLATES.md)
+- [Machine-readable experiment statement example](research/examples/experiment-statement.example.json)
+
+These guides distinguish implementation work from test evidence and scientific validation. Synthetic outputs must remain labeled as synthetic; software simulator behavior does not prove physical CL1 compatibility or biological equivalence.
