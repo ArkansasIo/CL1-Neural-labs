@@ -60,3 +60,11 @@ test('OpenAPI contract covers the implemented TypeScript REST routes', () => {
   assert.match(api, /Development-only API/);
   assert.match(server, /new WebSocketServer\(\{ server, path: '\/_\/ws\/overview' \}\)/);
 });
+
+test('simulator stimulation routes reject non-integer and blocked channels', () => {
+  const server = read('server.ts');
+  assert.match(server, /Number\.isInteger\(channel\)/);
+  assert.match(server, /GROUNDED_CHANNELS\.includes\(channel\)/);
+  assert.match(server, /REFERENCE_CHANNELS\.includes\(channel\)/);
+  assert.match(server, /invalid, grounded, or reference channel IDs/);
+});
