@@ -12,6 +12,10 @@ def main(argv=None):
     parser.add_argument("--seed",type=int,default=1,help="random seed for repeatable initialization")
     parser.add_argument("--show-tables",action="store_true",help="list seeded dataset table names")
     args=parser.parse_args(argv)
+    if args.steps < 0:
+        parser.error('--steps must be non-negative')
+    if args.step_ms <= 0:
+        parser.error('--step-ms must be positive')
     sim=NeuralCultureSimulator(seed=args.seed)
     for _ in range(max(0,args.steps)): sim.step(args.step_ms)
     analysis=ElectrophysiologyAnalysisEngine(sim).compute_snapshot()
