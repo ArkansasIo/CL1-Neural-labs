@@ -16,6 +16,7 @@ import { ElectrodeDetailModal } from './components/ElectrodeDetailModal';
 import { RecordingController } from './components/RecordingController';
 import { ResearchLibraryModal } from './components/ResearchLibraryModal';
 import { HardwareSettingsModal } from './components/HardwareSettingsModal';
+import { AdvancedSettingsModal } from './components/AdvancedSettingsModal';
 import { DatabaseDatasetHub } from './components/DatabaseDatasetHub';
 import MazeTeachingTool from './components/MazeTeachingTool';
 import EducationTeachingTool from './components/EducationTeachingTool';
@@ -34,6 +35,7 @@ export default function App() {
   const [cultureParams, setCultureParams] = useState<CultureParameters>(simulator.getCultureParams());
   const [isResearchOpen, setIsResearchOpen] = useState<boolean>(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const [isAdvancedSettingsOpen, setIsAdvancedSettingsOpen] = useState<boolean>(false);
   const [totalSpikes, setTotalSpikes] = useState<number>(0);
   const [totalStims, setTotalStims] = useState<number>(0);
   const [fps, setFps] = useState<number>(60);
@@ -77,6 +79,7 @@ export default function App() {
         setSelectedChannel(null);
         setIsResearchOpen(false);
         setIsSettingsOpen(false);
+        setIsAdvancedSettingsOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -126,6 +129,7 @@ export default function App() {
         fps={fps}
         onOpenResearch={() => setIsResearchOpen(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        onOpenAdvancedSettings={() => setIsAdvancedSettingsOpen(true)}
       />
 
       <main className="absolute left-64 top-[61px] right-0 bottom-[69px] overflow-hidden">
@@ -163,6 +167,8 @@ export default function App() {
           onChangeCultureParams={handleChangeCultureParams}
         />
       )}
+
+      {isAdvancedSettingsOpen && <AdvancedSettingsModal onClose={() => setIsAdvancedSettingsOpen(false)} />}
 
       {booting && <LinuxBootLoader onReady={() => setBooting(false)} />}
     </div>
