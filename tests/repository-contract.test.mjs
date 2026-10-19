@@ -68,3 +68,16 @@ test('simulator stimulation routes reject non-integer and blocked channels', () 
   assert.match(server, /REFERENCE_CHANNELS\.includes\(channel\)/);
   assert.match(server, /invalid, grounded, or reference channel IDs/);
 });
+
+test('package identity and version match the documented CL1 Neural Labs build', () => {
+  const pkg = JSON.parse(read('package.json'));
+  const lock = JSON.parse(read('package-lock.json'));
+  const identity = read('docs/BUILD-IDENTITY.md');
+  assert.equal(pkg.name, 'cl1-neural-labs');
+  assert.equal(pkg.version, '0.4.0');
+  assert.equal(lock.name, pkg.name);
+  assert.equal(lock.version, pkg.version);
+  assert.equal(lock.packages[''].name, pkg.name);
+  assert.equal(lock.packages[''].version, pkg.version);
+  assert.match(identity, /0\.4\.0/);
+});
