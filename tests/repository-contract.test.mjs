@@ -81,3 +81,21 @@ test('package identity and version match the documented CL1 Neural Labs build', 
   assert.equal(lock.packages[''].version, pkg.version);
   assert.match(identity, /0\.4\.0/);
 });
+
+test('advanced settings registry and module switches are wired into the application', () => {
+  for (const path of ['src/config/labSettings.ts', 'src/components/AdvancedSettingsModal.tsx']) {
+    assert.ok(existsSync(resolve(root, path)), `missing advanced settings path: ${path}`);
+  }
+  const registry = read('src/config/labSettings.ts');
+  const modal = read('src/components/AdvancedSettingsModal.tsx');
+  const app = read('src/App.tsx');
+  const header = read('src/components/Header.tsx');
+  for (const module of ['simulation', 'visualization', 'experiments', 'data', 'connectivity', 'safety', 'developer']) {
+    assert.match(registry, new RegExp(`id: '${module}'`), `module missing: ${module}`);
+  }
+  assert.match(modal, /localStorage/);
+  assert.match(modal, /Module switch/);
+  assert.match(modal, /Apply settings/);
+  assert.match(app, /AdvancedSettingsModal/);
+  assert.match(header, /onOpenAdvancedSettings/);
+});
