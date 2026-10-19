@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, Pause, RotateCcw, Volume2, VolumeX, BookOpen, Settings } from 'lucide-react';
+import { Play, Pause, RotateCcw, Volume2, VolumeX, BookOpen, Settings, SlidersHorizontal } from 'lucide-react';
 import { CultureParameters } from '../types/cl1';
 import { globalAudioSynth } from '../simulation/audioSynth';
 import { LeftSidebar } from './LeftSidebar';
@@ -19,6 +19,7 @@ interface HeaderProps {
   fps: number;
   onOpenResearch: () => void;
   onOpenSettings: () => void;
+  onOpenAdvancedSettings: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -34,6 +35,7 @@ export const Header: React.FC<HeaderProps> = ({
   fps,
   onOpenResearch,
   onOpenSettings,
+  onOpenAdvancedSettings,
 }) => {
   const [audioActive, setAudioActive] = useState<boolean>(globalAudioSynth.getIsEnabled());
 
@@ -54,9 +56,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="font-bold text-sm tracking-wide text-white">CL1 NEURAL LABS</span>
-                <span className="hidden sm:inline text-[9px] uppercase font-semibold px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-400 border border-cyan-800/60">
-                  Research Studio
-                </span>
+                <span className="hidden sm:inline text-[9px] uppercase font-semibold px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-400 border border-cyan-800/60">Research Studio</span>
               </div>
               <div className="flex items-center gap-2 text-[10px] text-slate-500">
                 <span className="flex items-center gap-1 text-emerald-400"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> SIM ONLINE</span>
@@ -76,6 +76,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
             <button onClick={onOpenResearch} className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-slate-900 border border-slate-800 text-slate-300 hover:text-cyan-300 hover:border-cyan-800 transition"><BookOpen className="w-3.5 h-3.5" /> Research</button>
             <button onClick={onOpenSettings} className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-slate-900 border border-slate-800 text-slate-300 hover:text-slate-100 transition"><Settings className="w-3.5 h-3.5" /> Hardware</button>
+            <button onClick={onOpenAdvancedSettings} className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-slate-900 border border-slate-800 text-slate-300 hover:text-cyan-300 hover:border-cyan-800 transition"><SlidersHorizontal className="w-3.5 h-3.5" /> Advanced</button>
             <button onClick={handleToggleAudio} title={audioActive ? 'Mute sonification' : 'Enable sonification'} className={`p-1.5 rounded-md border transition ${audioActive ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30' : 'bg-slate-900 text-slate-500 border-slate-800'}`}>
               {audioActive ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
             </button>
