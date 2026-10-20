@@ -9,7 +9,6 @@ test('Neural Node MLP-GRU plugin is registered as optional AI capability', () =>
   const app = read('src/App.tsx');
   const entry = read('src/plugins/neural-node-mlp-gru/index.ts');
   assert.match(builtin, /createNeuralNodeMlpGruPlugin/);
-  assert.match(builtin, /createNeuralNodeMlpGruPlugin/);
   assert.match(app, /BUILTIN_PLUGINS/);
   assert.match(entry, /enabledByDefault: false/);
   assert.match(entry, /physicalHardwareAccess/);
