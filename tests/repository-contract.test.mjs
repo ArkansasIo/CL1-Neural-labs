@@ -99,3 +99,15 @@ test('advanced settings registry and module switches are wired into the applicat
   assert.match(app, /AdvancedSettingsModal/);
   assert.match(header, /onOpenAdvancedSettings/);
 });
+
+test('GitHub Pages deployment uses a repo-scoped base path and verifies its artifact', () => {
+  const vite = read('vite.config.ts');
+  const deploy = read('scripts/deploy-pages.sh');
+  const workflow = read('.github/workflows/pages.yml');
+  assert.match(vite, /base:\s*process\.env\.VITE_BASE_PATH\s*\|\|\s*'\/'/);
+  assert.match(deploy, /VITE_BASE_PATH:-\/CL1-Neural-labs\//);
+  assert.match(deploy, /test -f dist\/index\.html/);
+  assert.match(deploy, /npm run build/);
+  assert.match(workflow, /VITE_BASE_PATH:\s*\/CL1-Neural-labs\//);
+  assert.match(workflow, /upload-pages-artifact@v3/);
+});
