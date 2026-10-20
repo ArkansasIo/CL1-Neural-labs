@@ -70,7 +70,21 @@ export class PluginManager {
 
   async enable(id: string): Promise<void> {
     const record = this.requireRecord(id);
-    if (record.status !== 'disabled') return;
+    if (record.status === 'running') return;
+    if (record.status === 'error') {
+      throw new Error(`Cannot enable plugin in error state without reload: ${id}`);
+    }
+    const dependencies = record.plugin.manifest.dependencies ?? [];
+    for (const dependency of dependencies) {
+      const dependencyRecord = this.requireRecord(dependency);
+      if (dependencyRecord.status === 'disabled') {
+        throw new Error(`Cannot enable ${id}; dependency is disabled: ${dependency}`);
+      }
+      if (dependencyRecord.status !== 'running' && dependencyRecord.status !== 'stopped') {
+        throw new Error(`Cannot enable ${id}; dependency is not initialized: ${dependency}`);
+      }
+    }
+    if (record.status !== 'disabled' && record.status !== 'stopped') return;
     this.registry.setStatus(id, 'discovered');
     await this.initializeOne(id);
     await this.startOne(id);
