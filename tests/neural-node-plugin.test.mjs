@@ -8,10 +8,16 @@ test('Neural Node MLP-GRU plugin is registered as optional AI capability', () =>
   const builtin = read('src/plugins/builtin.ts');
   const app = read('src/App.tsx');
   const entry = read('src/plugins/neural-node-mlp-gru/index.ts');
+  const manifest = JSON.parse(read('src/plugins/neural-node-mlp-gru/plugin.json'));
+
   assert.match(builtin, /createNeuralNodeMlpGruPlugin/);
   assert.match(app, /BUILTIN_PLUGINS/);
   assert.match(entry, /enabledByDefault: false/);
   assert.match(entry, /physicalHardwareAccess/);
+  assert.equal(manifest.id, 'cl1.neural-node-mlp-gru');
+  assert.equal(manifest.version, '4.0.0-alpha.1');
+  assert.deepEqual(manifest.architectures, ['MLP', 'GRU', 'GRU-MLP']);
+  assert.equal(manifest.enabledByDefault, false);
 });
 
 test('MLP-GRU source provides shape validation and all three architectures', () => {
@@ -20,6 +26,7 @@ test('MLP-GRU source provides shape validation and all three architectures', () 
   const mlp = read('src/plugins/neural-node-mlp-gru/mlp.ts');
   const gru = read('src/plugins/neural-node-mlp-gru/gru.ts');
   const hybrid = read('src/plugins/neural-node-mlp-gru/gru-mlp.ts');
+
   assert.match(tensor, /Number\.isFinite/);
   assert.match(dense, /class DenseLayer/);
   assert.match(mlp, /class MLP/);
