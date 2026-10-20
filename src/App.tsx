@@ -24,10 +24,17 @@ import NeuroCognitiveTeachingTool from './components/NeuroCognitiveTeachingTool'
 import { NeuralCultureSimulator } from './simulation/neuralCulture';
 import { CultureParameters } from './types/cl1';
 import { LinuxBootLoader } from './components/LinuxBootLoader';
+import { PluginManager } from './plugins/PluginManager';
+import { BUILTIN_PLUGINS } from './plugins/builtin';
 
 export default function App() {
   const [booting, setBooting] = useState(true);
   const simulator = useMemo(() => new NeuralCultureSimulator(), []);
+  const pluginManager = useMemo(() => {
+    const manager = new PluginManager();
+    manager.registerMany(BUILTIN_PLUGINS);
+    return manager;
+  }, []);
   const [activeTab, setActiveTab] = useState<string>('mea-2d');
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
@@ -39,6 +46,18 @@ export default function App() {
   const [totalSpikes, setTotalSpikes] = useState<number>(0);
   const [totalStims, setTotalStims] = useState<number>(0);
   const [fps, setFps] = useState<number>(60);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      await pluginManager.initializeAll();
+      if (!cancelled) await pluginManager.startAll();
+    })().catch((error) => console.error('[CL1] Plugin startup failed', error));
+    return () => {
+      cancelled = true;
+      void pluginManager.stopAll().then(() => pluginManager.disposeAll()).catch((error) => console.error('[CL1] Plugin shutdown failed', error));
+    };
+  }, [pluginManager]);
 
   useEffect(() => {
     let animId: number;
