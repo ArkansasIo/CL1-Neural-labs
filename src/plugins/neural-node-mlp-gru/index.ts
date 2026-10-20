@@ -3,6 +3,8 @@ export * from './dense';
 export * from './mlp';
 export * from './gru';
 export * from './gru-mlp';
+export * from './config';
+export * from './service';
 
 import type { CL1Plugin } from '../PluginTypes';
 
