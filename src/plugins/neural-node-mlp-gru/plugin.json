@@ -1,0 +1,36 @@
+{
+  "id": "cl1.neural-node-mlp-gru",
+  "sourcePluginId": "neural-node-mlp-gru-4.0",
+  "name": "Neural Node MLP-GRU 4.0",
+  "version": "4.0.0-alpha.1",
+  "runtime": "typescript",
+  "entry": "index.ts",
+  "architectures": [
+    "MLP",
+    "GRU",
+    "GRU-MLP"
+  ],
+  "features": [
+    "dense-layers",
+    "multilayer-perceptron",
+    "gated-recurrent-unit",
+    "hybrid-sequence-static-model",
+    "cpu-inference",
+    "shape-validation",
+    "simulation-only"
+  ],
+  "capabilities": [
+    "mlp-inference",
+    "gru-sequence-encoding",
+    "gru-mlp-hybrid"
+  ],
+  "dependencies": [
+    "cl1.core",
+    "cl1.analysis",
+    "cl1.data"
+  ],
+  "permissions": [
+    "data.read"
+  ],
+  "enabledByDefault": false
+}
