@@ -1,4 +1,5 @@
 import type { CL1Plugin } from './PluginTypes';
+import { createNeuralNodeMlpGruPlugin } from './neural-node-mlp-gru';
 
 const createPlugin = (manifest: CL1Plugin['manifest']): CL1Plugin => ({
   manifest,
@@ -100,6 +101,7 @@ export const BUILTIN_PLUGINS: CL1Plugin[] = [
     permissions: ['data.read'],
     capabilities: ['feature-extraction', 'model-adapter'],
   }),
+  createNeuralNodeMlpGruPlugin(),
   createPlugin({
     id: 'cl1.developer',
     name: 'Developer Diagnostics',
