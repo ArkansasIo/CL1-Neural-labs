@@ -14,6 +14,8 @@ test('Neural Node MLP-GRU plugin is registered as optional AI capability', () =>
   assert.match(app, /BUILTIN_PLUGINS/);
   assert.match(entry, /enabledByDefault: false/);
   assert.match(entry, /physicalHardwareAccess/);
+  assert.match(entry, /export \* from '\.\/config'/);
+  assert.match(entry, /export \* from '\.\/service'/);
   assert.equal(manifest.id, 'cl1.neural-node-mlp-gru');
   assert.equal(manifest.version, '4.0.0-alpha.1');
   assert.deepEqual(manifest.architectures, ['MLP', 'GRU', 'GRU-MLP']);
@@ -26,6 +28,8 @@ test('MLP-GRU source provides shape validation and all three architectures', () 
   const mlp = read('src/plugins/neural-node-mlp-gru/mlp.ts');
   const gru = read('src/plugins/neural-node-mlp-gru/gru.ts');
   const hybrid = read('src/plugins/neural-node-mlp-gru/gru-mlp.ts');
+  const config = read('src/plugins/neural-node-mlp-gru/config.ts');
+  const service = read('src/plugins/neural-node-mlp-gru/service.ts');
 
   assert.match(tensor, /Number\.isFinite/);
   assert.match(dense, /class DenseLayer/);
@@ -34,4 +38,6 @@ test('MLP-GRU source provides shape validation and all three architectures', () 
   assert.match(gru, /input dimension mismatch/);
   assert.match(hybrid, /class GRUMLPModel/);
   assert.match(hybrid, /static feature dimension mismatch/);
+  assert.match(config, /maxSequenceLength: 4096/);
+  assert.match(service, /NEURAL_NODE_MODEL_LIMITS\.maxSequenceLength/);
 });
