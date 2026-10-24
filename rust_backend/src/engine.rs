@@ -27,6 +27,7 @@ pub struct NeuralCultureEngine {
     pending_stims: Vec<StimEvent>,
     start_time: std::time::Instant,
     tx: broadcast::Sender<StatusReport>,
+    last: Option<StatusReport>,
 }
 
 impl NeuralCultureEngine {
@@ -55,6 +56,7 @@ impl NeuralCultureEngine {
                 pending_stims: Vec::new(),
                 start_time: std::time::Instant::now(),
                 tx,
+                last: None,
             },
             rx,
         )
@@ -192,19 +194,42 @@ impl NeuralCultureEngine {
         };
 
         let _ = self.tx.send(report.clone());
+        self.last = Some(report.clone());
         report
     }
 
-    /// Run the engine loop until stopped. Call from a spawned task.
-    pub async fn run(&mut self, tick_ms: u64) {
-        self.running = true;
-        let mut interval = tokio::time::interval(std::time::Duration::from_millis(tick_ms));
-        loop {
-            interval.tick().await;
-            if !self.running {
-                break;
-            }
-            self.step();
+    /// Most recent status report (from the last completed step).
+    pub fn last_report(&self) -> StatusReport {
+        self.last.clone().unwrap_or_else(|| self.snapshot_only())
+    }
+
+    /// Build a report without advancing the simulation (rates frozen).
+    fn snapshot_only(&self) -> StatusReport {
+        let mean_rate = self.channels.iter().map(|c| c.rate_hz).sum::<f64>() / CHANNELS as f64;
+        StatusReport {
+            tick: self.tick,
+            running: self.running,
+            uptime_s: self.start_time.elapsed().as_secs_f64(),
+            total_spikes: self.total_spikes,
+            total_stims: self.total_stims,
+            burst_active: self.burst_active,
+            burst_progress: self.burst_progress,
+            mean_rate_hz: mean_rate,
+            channels: self
+                .channels
+                .iter()
+                .enumerate()
+                .map(|(i, c)| ChannelFrame {
+                    channel: i,
+                    baseline_uv: c.baseline_uv,
+                    sample_uv: c.waveform[(self.tick as usize) % WAVEFORM_LEN],
+                    rate_hz: c.rate_hz,
+                    refractory: c.refractory_ticks > 0,
+                    spiked: c.spiked_this_tick,
+                })
+                .collect(),
+            spikes: Vec::new(),
+            stims: Vec::new(),
         }
     }
 

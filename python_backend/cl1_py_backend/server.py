@@ -148,9 +148,116 @@ class Cl1Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(raw)
 
+    def _forward_or_local(self, method: str, path: str, payload: dict | None) -> tuple[int, dict]:
+        """Forward to Rust core when available; else serve demo/local data."""
+        if self.gateway is not None and not self.demo:
+            if method == "GET":
+                return self.gateway._call("GET", path)
+            return self.gateway._call(method, path, payload or {})
+        # Local fallback for diagnostics endpoints.
+        if path == "/api/diagnostics/step":
+            return 200, self._diag_step()
+        if path.startswith("/api/diagnostics/scan/"):
+            return 200, self._diag_scan(path.rsplit("/", 1)[-1])
+        if path == "/api/diagnostics/pathology":
+            return 200, self._diag_pathology(payload or {})
+        return 404, {"error": "not found"}
+
+    # --- embedded diagnostics simulator (demo fallback) ---
+    _diag_state: dict = {}
+
+    @classmethod
+    def _diag_step(cls) -> dict:
+        import random
+
+        st = cls._diag_state
+        st.setdefault("tick", 0)
+        st["tick"] += 1
+        findings = []
+        if random.random() < 0.05:
+            findings.append({
+                "modality": "eeg",
+                "finding": "epileptiform spike (simulated)",
+                "confidence": 0.6,
+                "severity": "mild",
+                "note": f"channel {random.randint(0, CHANNELS - 1)}",
+            })
+        bpm = round(random.uniform(58, 95), 1)
+        findings.append({
+            "modality": "ecg",
+            "finding": "rhythm: sinus" if 55 < bpm < 100 else "rhythm: abnormal (simulated)",
+            "confidence": 0.7,
+            "severity": "normal" if 55 < bpm < 100 else "mild",
+            "note": f"bpm {bpm}",
+        })
+        return {"tick": st["tick"], "findings": findings,
+                "disclaimer": "Synthetic simulation. Not medical data; not for diagnosis."}
+
+    @classmethod
+    def _diag_scan(cls, modality: str) -> dict:
+        import random
+
+        regions = ["frontal", "parietal", "temporal", "occipital", "cerebellum", "brainstem"]
+        findings = []
+        for r in regions:
+            if random.random() < 0.1:
+                findings.append({
+                    "modality": modality,
+                    "region": r,
+                    "lesion_volume_mm3": round(random.uniform(60, 250), 1),
+                    "anomaly": f"synthetic {modality} anomaly",
+                    "severity": random.choice(["mild", "moderate"]),
+                })
+        return {"modality": modality, "findings": findings,
+                "disclaimer": "Synthetic imaging simulation. Not medical data."}
+
+    @classmethod
+    def _diag_pathology(cls, payload: dict) -> dict:
+        cls._diag_state.setdefault("pathology", []).append(payload)
+        return {"injected": True, "region": payload.get("region"), "kind": payload.get("kind"),
+                "disclaimer": "Synthetic pathology injected into the simulated brain model."}
+
+    # --- built-in experiment list (demo fallback) ---
+    _EXPERIMENTS = [
+        ("pong", "DishBrain-style Pong: paddle tracks the hemisphere with higher firing"),
+        ("associative-conditioning", "Pair ch0+ch1 stimulation, then test whether ch2 responds"),
+        ("maze-navigation", "Navigate a synthetic maze using population activity"),
+        ("burst-characterization", "Detect and measure synthetic network bursts"),
+        ("evoked-potential", "Stimulate ch0 and measure the evoked response on ch1"),
+        ("habituation", "Repeated identical stimulation; measure response decline"),
+        ("sensitization", "Strong stimulus then test global response increase"),
+        ("oscillation-cycling", "Drive slow oscillation cycles"),
+        ("noise-rejection", "Stimulate during high noise epochs"),
+        ("connectivity-mapping", "Estimate synthetic functional connectivity"),
+        ("homeostasis", "Closed-loop regulation of mean firing rate"),
+        ("plasticity-pairing", "STDP-like pre/post pairing protocol"),
+        ("working-memory", "Delayed match-to-sample"),
+        ("attention-wta", "Winner-take-all attention between two populations"),
+        ("bandit-decision", "Two-armed bandit decision"),
+        ("afterdischarge-screen", "Pulse train + afterdischarge-like runaway check"),
+        ("interval-timing", "Fixed inter-stimulus interval tracking"),
+        ("contrast-adaptation", "Alternate high/low contrast stimulation"),
+        ("pattern-completion", "Cue half a pattern, check completion"),
+        ("reafference", "Self-generated vs external activity cancellation"),
+        ("go-no-go", "Respond to go cues, withhold on no-go"),
+        ("place-field", "Synthetic spatial tuning"),
+        ("replay-detection", "Sequential reactivation after training"),
+        ("adaptive-dose", "Closed-loop dose titration"),
+    ]
+
+    @classmethod
+    def _builtin_experiment_list(cls) -> list[dict]:
+        return [{"name": n, "description": d} for n, d in cls._EXPERIMENTS]
+
     def do_GET(self) -> None:  # noqa: N802
         if self.path == "/api/health":
             self._send(200, {"status": "ok", "demo": self.demo, "rust": self.gateway is not None})
+        elif self.path == "/api/experiments":
+            if self.demo or self.gateway is None:
+                self._send(200, {"experiments": self._builtin_experiment_list(), "demo": True})
+            else:
+                code, body = self.gateway._call("GET", "/api/experiments")
+                self._send(code, body)
         elif self.path == "/api/status":
             if self.demo or self.gateway is None:
                 self._send(200, self._sim().step())
@@ -176,7 +283,37 @@ class Cl1Handler(BaseHTTPRequestHandler):
                 self._send(400, {"error": "invalid JSON"})
                 return
 
-        if self.path == "/api/stim":
+        if self.path == "/api/experiments/run":
+            if self.demo or self.gateway is None:
+                self._send(501, {"error": "experiment execution requires the Rust core (not in demo mode)"})
+            else:
+                code, body = self.gateway._call("POST", "/api/experiments/run", payload)
+                self._send(code, body)
+        elif self.path == "/api/brainscript":
+            from .brainscript import run_script, BrainScriptError
+
+            src = payload.get("script", "")
+            if not src.strip():
+                self._send(400, {"error": "missing 'script' field"})
+                return
+            try:
+                result = run_script(src)
+                self._send(200, {"ok": True, "result": result, "language": "brainscript"})
+            except BrainScriptError as exc:
+                self._send(400, {"ok": False, "error": str(exc), "language": "brainscript"})
+        elif self.path == "/api/diagnostics/step":
+            if self.demo or self.gateway is None:
+                self._send(200, self._diag_step())
+            else:
+                code, body = self.gateway._call("POST", "/api/diagnostics/step", {})
+                self._send(code, body)
+        elif self.path == "/api/diagnostics/pathology":
+            if self.demo or self.gateway is None:
+                self._send(200, self._diag_pathology(payload))
+            else:
+                code, body = self.gateway._call("POST", "/api/diagnostics/pathology", payload)
+                self._send(code, body)
+        elif self.path == "/api/stim":
             channels = payload.get("channels") or []
             if not channels or any(not (0 <= c < CHANNELS) for c in channels):
                 self._send(400, {"error": f"channels must be non-empty ints in 0..{CHANNELS - 1}"})

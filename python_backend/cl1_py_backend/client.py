@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import time
 import urllib.request
 from datetime import datetime
 
@@ -98,6 +99,134 @@ def render(report: dict) -> str:
     return "\n".join(out)
 
 
+def diagnostics_menu(base_url: str) -> None:
+    """Interactive Neural Diagnostic System menu (synthetic only)."""
+    MODALITIES = {
+        "1": "eeg",
+        "2": "mri",
+        "3": "ct",
+        "4": "fmri",
+        "5": "mra",
+        "6": "pet",
+        "7": "spect",
+        "8": "ecg",
+        "9": "emg",
+    }
+    NAMES = {
+        "eeg": "EEG — brain electrical activity",
+        "mri": "MRI — brain structure",
+        "ct": "CT — X-ray imaging (bleeding/trauma)",
+        "fmri": "fMRI — functional activity/blood flow",
+        "mra": "MRA/MRV — brain blood vessels",
+        "pet": "PET — metabolic activity",
+        "spect": "SPECT — regional blood flow",
+        "ecg": "ECG/EKG — heart rhythm (brain-heart interaction)",
+        "emg": "EMG/NCS — nerve and muscle electrical function",
+    }
+    while True:
+        print(CLEAR + BOLD + "=== Neural Diagnostic System (synthetic) ===" + RESET)
+        for key, mod in MODALITIES.items():
+            print(f"  [{key}] {NAMES[mod]}")
+        print("  [s] Run one full diagnostic cycle (all modalities)")
+        print("  [p] Inject synthetic pathology (research simulation)")
+        print("  [q] Back to live view")
+        choice = input("Select> ").strip().lower()
+        if choice == "q":
+            return
+        if choice == "s":
+            result = post_json(base_url, "/api/diagnostics/step", {})
+            print(json.dumps(result, indent=2))
+            input("Enter to continue...")
+        elif choice == "p":
+            region = input("Region (frontal/parietal/temporal/occipital/cerebellum/brainstem): ").strip()
+            kind = input("Kind (lesion/bleeding/hypoperfusion/hypometabolism): ").strip()
+            try:
+                magnitude = float(input("Magnitude (mm3 or % drop): ").strip() or "100")
+            except ValueError:
+                magnitude = 100.0
+            result = post_json(base_url, "/api/diagnostics/pathology",
+                               {"region": region, "kind": kind, "magnitude": magnitude})
+            print(json.dumps(result, indent=2))
+            input("Enter to continue...")
+        elif choice in MODALITIES:
+            mod = MODALITIES[choice]
+            if mod in ("eeg", "ecg", "emg"):
+                result = post_json(base_url, "/api/diagnostics/step", {})
+                findings = [f for f in result.get("findings", []) if f["modality"] == mod]
+            else:
+                result = get_json(base_url, f"/api/diagnostics/scan/{mod}")
+                findings = result.get("findings", [])
+            print(BOLD + f"--- {NAMES[mod]} ---" + RESET)
+            if findings:
+                for f in findings:
+                    sev = f.get("severity", "normal")
+                    color = {"normal": GREEN, "mild": CYAN, "moderate": YELLOW, "severe": RED}.get(sev, RESET)
+                    print(f" {color}[{sev}]{RESET} {f.get('finding') or f.get('anomaly')}"
+                          f" {DIM}({f.get('region', f.get('note', ''))}){RESET}")
+            else:
+                print(GREEN + " no anomalies detected (simulated)" + RESET)
+            print(DIM + result.get("disclaimer", "") + RESET)
+            input("Enter to continue...")
+
+
+def experiments_menu(base_url: str) -> None:
+    """Interactive closed-loop experiment suite menu."""
+    while True:
+        print(CLEAR + BOLD + "=== Experiment Suite (synthetic closed-loop) ===" + RESET)
+        try:
+            data = get_json(base_url, "/api/experiments")
+            experiments = data.get("experiments", [])
+        except Exception as exc:  # noqa: BLE001
+            print(f"{RED}failed to list experiments: {exc}{RESET}")
+            return
+        for i, exp in enumerate(experiments, 1):
+            print(f"  [{i:2d}] {exp['name']:26s} — {exp['description'][:60]}")
+        print("  [r] Run an experiment by number")
+        print("  [q] Back")
+        choice = input("Select> ").strip().lower()
+        if choice == "q":
+            return
+        if choice == "r":
+            idx = input(f"Experiment number (1-{len(experiments)}): ").strip()
+            if not idx.isdigit() or not (1 <= int(idx) <= len(experiments)):
+                print(RED + "invalid selection" + RESET)
+                input("Enter to continue...")
+                continue
+            name = experiments[int(idx) - 1]["name"]
+            ticks = input("Ticks to run [100]: ").strip() or "100"
+            print(CYAN + f"running {name} for {ticks} ticks..." + RESET)
+            result = post_json(base_url, "/api/experiments/run", {"name": name, "ticks": int(ticks)})
+            print(json.dumps(result, indent=2))
+            input("Enter to continue...")
+
+
+def brainscript_repl(base_url: str) -> None:
+    """Interactive BrainScript editor/run loop (Lua-like, OOP)."""
+    print(BOLD + "BrainScript REPL — enter script; empty line to run, ':q' to quit" + RESET)
+    print(DIM + "supports: local, if/then/else/end, while, for, function, class/method, tables" + RESET)
+    while True:
+        lines = []
+        print(CYAN + "--- new script ---" + RESET)
+        while True:
+            try:
+                line = input("> ")
+            except EOFError:
+                return
+            if line.strip() == ":q":
+                return
+            if not line.strip():
+                break
+            lines.append(line)
+        if not lines:
+            continue
+        src = "\n".join(lines)
+        result = post_json(base_url, "/api/brainscript", {"script": src})
+        if result.get("ok"):
+            print(GREEN + f"result: {result.get('result')}" + RESET)
+        else:
+            print(RED + f"error: {result.get('error')}" + RESET)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="CL1 Python client frontend")
     parser.add_argument("--url", default=DEFAULT_URL)
@@ -111,7 +240,7 @@ def main() -> None:
     except Exception as exc:  # noqa: BLE001
         raise SystemExit(f"Cannot reach backend: {exc}\nStart it with: python -m cl1_py_backend.server --demo")
 
-    print("Press Ctrl+C to stop.\n")
+    print("Keys: [d]iagnostics [e]xperiments [b]rainscript [q]uit. Ctrl+C to stop.\n")
     try:
         while True:
             try:
@@ -119,9 +248,25 @@ def main() -> None:
                 print(render(report))
             except Exception as exc:  # noqa: BLE001
                 print(f"{RED}stream error: {exc}{RESET}")
-            import time
+            try:
+                import select
+                import sys as _sys
 
-            time.sleep(args.interval)
+                r, _, _ = select.select([_sys.stdin], [], [], args.interval)
+                if r:
+                    cmd = _sys.stdin.readline().strip().lower()
+                    if cmd == "q":
+                        print("Client stopped.")
+                        break
+                    if cmd == "d":
+                        diagnostics_menu(args.url)
+                    if cmd == "e":
+                        experiments_menu(args.url)
+                    if cmd == "b":
+                        brainscript_repl(args.url)
+            except ImportError:
+                # Windows: select on stdin unsupported; fall back to sleep
+                time.sleep(args.interval)
     except KeyboardInterrupt:
         print("\nClient stopped.")
 

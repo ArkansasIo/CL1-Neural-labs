@@ -4,10 +4,14 @@
 //! neural culture. This is a synthetic model; it is not biological
 //! wetware and does not control physical CL1 hardware.
 
+pub mod diagnostics;
 pub mod engine;
+pub mod experiments;
+pub mod hardware;
 pub mod types;
 
 pub use engine::NeuralCultureEngine;
+pub use hardware::{AdapterError, AdapterInfo, AdapterMode, HardwareAdapter};
 pub use types::{
     ApiError, ChannelFrame, CultureConfig, SpikeEvent, StimEvent, StatusReport,
 };
