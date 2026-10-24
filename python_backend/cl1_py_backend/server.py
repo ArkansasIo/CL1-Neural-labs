@@ -250,6 +250,13 @@ class Cl1Handler(BaseHTTPRequestHandler):
         return [{"name": n, "description": d} for n, d in cls._EXPERIMENTS]
 
     def do_GET(self) -> None:  # noqa: N802
+        if self.path.startswith("/api") or self.path.startswith("/_"):
+            self._do_api()
+        else:
+            if not self._serve_static():
+                self._send(404, {"error": "not found"})
+
+    def _do_api(self) -> None:
         if self.path == "/api/health":
             self._send(200, {"status": "ok", "demo": self.demo, "rust": self.gateway is not None})
         elif self.path == "/api/experiments":
@@ -266,7 +273,7 @@ class Cl1Handler(BaseHTTPRequestHandler):
                 self._send(code, body if code == 200 else body)
         elif self.path == "/api/config":
             if self.demo or self.gateway is None:
-                self._send(200, self.sim.config)
+                self._send(200, self._sim().config)
             else:
                 code, body = self.gateway.config()
                 self._send(code, body)
@@ -332,7 +339,7 @@ class Cl1Handler(BaseHTTPRequestHandler):
         elif self.path == "/api/config":
             if self.demo or self.gateway is None:
                 self._sim().config.update(payload)
-                self._send(200, self.sim.config)
+                self._send(200, self._sim().config)
             else:
                 code, body = self.gateway.config(payload)
                 self._send(code, body)
@@ -344,6 +351,81 @@ class Cl1Handler(BaseHTTPRequestHandler):
             self._send(200, {"running": False})
         else:
             self._send(404, {"error": "not found"})
+
+    # ------------------------------------------------------------------
+    # Static UI (built React app in ../dist or ./dist next to the exe)
+    # ------------------------------------------------------------------
+
+    _STATIC_ROOTS = None  # computed lazily
+
+    @classmethod
+    def _static_root(cls):
+        if cls._STATIC_ROOTS is None:
+            import sys
+            candidates = []
+            # PyInstaller onefile: _MEIPASS holds bundled data
+            meipass = getattr(sys, "_MEIPASS", None)
+            if meipass:
+                candidates.append(os.path.join(meipass, "ui"))
+            # running from source: repo root/dist
+            here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # python_backend/
+            repo = os.path.dirname(here)
+            candidates.append(os.path.join(repo, "dist"))
+            candidates.append(os.path.join(os.getcwd(), "dist"))
+            cls._STATIC_ROOTS = [c for c in candidates if os.path.isdir(c)]
+        return cls._STATIC_ROOTS[0] if cls._STATIC_ROOTS else None
+
+    _MIME = {
+        ".html": "text/html; charset=utf-8",
+        ".js": "application/javascript",
+        ".css": "text/css",
+        ".svg": "image/svg+xml",
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
+        ".json": "application/json",
+        ".ico": "image/x-icon",
+        ".woff2": "font/woff2",
+        ".map": "application/json",
+    }
+
+    def _serve_static(self) -> bool:
+        root = self._static_root()
+        if root is None:
+            return False
+        path = self.path.split("?", 1)[0]
+        if path.startswith("/api") or path.startswith("/_"):
+            return False
+        if path == "/":
+            path = "/index.html"
+        # reject path traversal
+        target = os.path.normpath(os.path.join(root, path.lstrip("/")))
+        if not target.startswith(os.path.normpath(root)):
+            return False
+        if not os.path.isfile(target):
+            # SPA fallback: serve index.html for client-side routes
+            index = os.path.join(root, "index.html")
+            if os.path.isfile(index):
+                self._serve_file(index)
+                return True
+            return False
+        self._serve_file(target)
+        return True
+
+    def _serve_file(self, filepath: str) -> None:
+        ext = os.path.splitext(filepath)[1].lower()
+        ctype = self._MIME.get(ext, "application/octet-stream")
+        try:
+            with open(filepath, "rb") as f:
+                data = f.read()
+        except OSError:
+            self._send(404, {"error": "file not found"})
+            return
+        self.send_response(200)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(len(data)))
+        self.send_header("Cache-Control", "no-cache")
+        self.end_headers()
+        self.wfile.write(data)
 
 
 def main() -> None:

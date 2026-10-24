@@ -228,6 +228,9 @@ def brainscript_repl(base_url: str) -> None:
 
 
 def main() -> None:
+    # Enable ANSI escape sequences on Windows legacy consoles.
+    if os.name == "nt":
+        os.system("")
     parser = argparse.ArgumentParser(description="CL1 Python client frontend")
     parser.add_argument("--url", default=DEFAULT_URL)
     parser.add_argument("--interval", type=float, default=0.2, help="refresh seconds")
@@ -248,7 +251,28 @@ def main() -> None:
                 print(render(report))
             except Exception as exc:  # noqa: BLE001
                 print(f"{RED}stream error: {exc}{RESET}")
-            try:
+            if os.name == "nt":
+                # Windows cannot select() on stdin; poll keyboard buffer instead.
+                import msvcrt
+
+                end_wait = time.time() + args.interval
+                while time.time() < end_wait:
+                    if msvcrt.kbhit():
+                        cmd = msvcrt.getwche().lower()
+                        if cmd == "q":
+                            print("\nClient stopped.")
+                            return
+                        if cmd == "d":
+                            diagnostics_menu(args.url)
+                            break
+                        if cmd == "e":
+                            experiments_menu(args.url)
+                            break
+                        if cmd == "b":
+                            brainscript_repl(args.url)
+                            break
+                    time.sleep(0.05)
+            else:
                 import select
                 import sys as _sys
 
@@ -264,9 +288,6 @@ def main() -> None:
                         experiments_menu(args.url)
                     if cmd == "b":
                         brainscript_repl(args.url)
-            except ImportError:
-                # Windows: select on stdin unsupported; fall back to sleep
-                time.sleep(args.interval)
     except KeyboardInterrupt:
         print("\nClient stopped.")
 
