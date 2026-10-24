@@ -30,6 +30,19 @@ jobs:
       - name: Production build
         run: npm run build
 
+  rust:
+    name: Rust backend check and tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Check Rust backend
+        working-directory: rust_backend
+        run: cargo check --all-targets
+      - name: Rust tests
+        working-directory: rust_backend
+        run: cargo test --all-targets
+
   python:
     name: Python unit tests
     runs-on: ubuntu-latest
