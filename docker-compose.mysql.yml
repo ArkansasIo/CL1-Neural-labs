@@ -1,0 +1,23 @@
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-cl1_neural_labs}
+      MYSQL_USER: ${MYSQL_USER:-cl1}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-change-me}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change-me}
+    ports:
+      - "3306:3306"
+    volumes:
+      - cl1_mysql_data:/var/lib/mysql
+      - ./mysql/001_init.sql:/docker-entrypoint-initdb.d/001_init.sql:ro
+      - ./mysql/002_indexes.sql:/docker-entrypoint-initdb.d/002_indexes.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  cl1_mysql_data:
