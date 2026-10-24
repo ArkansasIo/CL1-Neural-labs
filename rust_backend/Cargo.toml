@@ -1,0 +1,27 @@
+[package]
+name = "cl1_rust_backend"
+version = "0.4.0"
+edition = "2021"
+license = "MIT"
+description = "CL1 Neural Labs Rust backend: 64-channel neural-culture simulation core with REST + WebSocket interface."
+
+[lib]
+name = "cl1_rust_backend"
+path = "src/lib.rs"
+
+[[bin]]
+name = "cl1-server"
+path = "src/main.rs"
+
+[dependencies]
+axum = { version = "0.8", features = ["ws"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rand = "0.8"
+tower-http = { version = "0.6", features = ["cors"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+[profile.release]
+opt-level = 3
