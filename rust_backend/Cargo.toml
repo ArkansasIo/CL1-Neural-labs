@@ -13,6 +13,10 @@ path = "src/lib.rs"
 name = "cl1-server"
 path = "src/main.rs"
 
+[[bin]]
+name = "cl1-cron-worker"
+path = "src/bin/cron_worker.rs"
+
 [dependencies]
 axum = { version = "0.8", features = ["ws"] }
 tokio = { version = "1", features = ["full"] }
@@ -24,6 +28,7 @@ ureq = { version = "2.10", default-features = false, features = ["json", "tls"] 
 tracing = "0.1"
 tracing-subscriber = "0.3"
 thiserror = "2"
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "tls-rustls", "mysql", "chrono", "json"] }
 
 [profile.release]
 opt-level = 3
